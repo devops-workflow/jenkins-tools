@@ -25,8 +25,8 @@ def getArgs(argv):
             action = arg
         elif opt in ("-i", "--instances"):
             instances = arg
-    if not action in ['start', 'stop']:
-        print "ERROR: 'action' must be 'start' or 'stop'"
+    if not action in ['start', 'status', 'stop']:
+        print "ERROR: 'action' must be 'start', 'status', or 'stop'"
         usage()
     # TODO: validate instances
     return action, instances
