@@ -8,7 +8,7 @@ import sys
 
 def usage():
     print '%s <options>\n' % (sys.argv[0])
-    print '-a --action      Instance action: start, stop'
+    print '-a --action      Instance action: start, status, stop'
     print '-h --help        This page'
     print '-i --instance    List of instance names to apply action to'
     sys.exit(1)
@@ -51,7 +51,7 @@ for instance in instances:
     elif action == 'stop':
         if instance.state["Name"] == 'running':
             ec2.instances.filter(InstanceIds=[instance.id]).stop()
-    else:
+    elif action != 'status':
         print "ERROR: unknown action: %s" % action
         sys.exit(1)
     instance.reload()
