@@ -55,4 +55,4 @@ for instance in instances:
         print "ERROR: unknown action: %s" % action
         sys.exit(1)
     instance.reload()
-    print('After requested '%s': ' % action, instance.id, instance.tags[0]["Value"], instance.state["Name"])
+    print("After requested '%s': " % action, instance.id, instance.tags[0]["Value"], instance.state["Name"])
