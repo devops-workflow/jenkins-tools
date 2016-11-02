@@ -6,17 +6,14 @@
 #   $WORKSPACE/bin/* $home/bin
 #   $WORKSPACE/etc/* $home/etc
 
-if [ -d "${JENKINS_HOME}" ]; then
-  # or [ "${NODE_NAME}" = "master" ]
-  # Jenkins master
-  home=${JENKINS_HOME}
-else
-  # Jenkins build slave
-  home=${WORKSPACE%%/workspace*}
-fi
+. bin/source-home.sh
 
 echo "INFO: Destination HOME: ${home}"
-echo "INFO: Copying bin..."
-cp -afu ${WORKSPACE}/bin ${home}
-echo "INFO: Copying etc..."
-cp -afu ${WORKSPACE}/etc ${home}
+if [ -d ${WORKSPACE}/bin ]; then
+  echo "INFO: Copying bin..."
+  cp -afu ${WORKSPACE}/bin ${home}
+fi
+if [ -d ${WORKSPACE}/etc ]; then
+  echo "INFO: Copying etc..."
+  cp -afu ${WORKSPACE}/etc ${home}
+fi
