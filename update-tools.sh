@@ -8,11 +8,15 @@
 
 if [ -d "${JENKINS_HOME}" ]; then
   # or [ "${NODE_NAME}" = "master" ]
+  # Jenkins master
   home=${JENKINS_HOME}
 else
-  # FIX: need slave's jenkins home dir NOT user home
-  #home=${HOME}
+  # Jenkins build slave
   home=${WORKSPACE%%/workspace*}
 fi
 
-echo "HOME: ${home}"
+echo "INFO: Destination HOME: ${home}"
+echo "INFO: Copying bin..."
+cp -afu ${WORKSPACE}/bin ${home}
+echo "INFO: Copying etc..."
+cp -afu ${WORKSPACE}/etc ${home}
