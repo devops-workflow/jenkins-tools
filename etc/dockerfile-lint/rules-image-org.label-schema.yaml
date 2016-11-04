@@ -1,0 +1,79 @@
+---
+  # dockerfile-lint rules for testing labels in Docker image using spec from label-schema.org
+  profile:
+    name: "org.schema-label"
+    description: "Check required labels from label-schema.org specification in Docker image"
+  line_rules:
+    LABEL:
+       paramSyntaxRegex: /.+/
+       defined_namevals:
+           org.label-schema.build-date:
+             valueRegex: /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*/
+             message: "Build Date/Time in RFC 3339 format"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.name:
+             valueRegex: /[\w]+\/[\w]+/
+             message: "Name of the image. Format: x/y"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.description:
+             valueRegex: /.+/
+             message: "Description of the image"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.vendor:
+             valueRegex: /[\w]+.*/
+             message: "Vendor name"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.version:
+             valueRegex: /\d+\.\d+.*/
+             message: "Docker Image version"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.vcs-ref:
+             valueRegex: /[\w]+/
+             message: "VCS commit reference"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.vcs-url:
+             valueRegex: /[\w]+.+/
+             message: "VCS repo url"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.schema-version:
+             valueRegex: /\d+\.\d+/
+             message: "Label schema version"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+#           jenkins-job="${JOB_NAME}" \
+#           jenkins-build="${BUILD_NUMBER}" \
+#           jenkins-build-tag="${BUILD_TAG}" \
+#           jenkins-build-url="${BUILD_URL}"
+  required_instructions:
+    -
+      instruction: LABEL
+      count: 1
+      description: "Labels are required...."
+      level: error
+      message: "No LABELs are defined"
+      reference_url:
+        - "https://docs.docker.com/reference/builder/"
+        - "#label"

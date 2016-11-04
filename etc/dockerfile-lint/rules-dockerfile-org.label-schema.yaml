@@ -1,0 +1,98 @@
+---
+  # dockerfile-lint rules for labels defined as variables using spec from label-schema.org
+  profile:
+    name: "org.schema-label"
+    description: "Check required labels from label-schema.org specifications"
+  line_rules:
+    LABEL:
+       paramSyntaxRegex: /.+/
+       defined_namevals:
+           org.label-schema.build-date:
+             valueRegex: /\${\w+}/
+             message: "Build Date/Time must be a variable in Dockerfile source for build process to provide value"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.name:
+             # Have build process provide as GitOrg/GitRepo
+             valueRegex: /\${\w+}/
+             message: "Name of the image must be a variable in Dockerfile source for build process to provide value"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.description:
+             valueRegex: /.+/
+             message: "Description of the image"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.vendor:
+             valueRegex: /[\w]+.*/
+             message: "Vendor name"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.version:
+             valueRegex: /\${\w+}/
+             message: "Docker Image version must be a variable in Dockerfile source for build process to provide value"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.vcs-ref:
+             valueRegex: /\${\w+}/
+             message: "VCS commit reference must be a variable in Dockerfile source for build process to provide value"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.vcs-url:
+             valueRegex: /\${\w+}/
+             message: "VCS repo url must be a variable in Dockerfile source for build process to provide value"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+           org.label-schema.schema-version:
+             valueRegex: /\d+\.\d+/
+             message: "Label schema version"
+             level: "warn"
+             required: true
+             reference_url:
+               - "http://label-schema.org/"
+#           jenkins-job="${JOB_NAME}" \
+#           jenkins-build="${BUILD_NUMBER}" \
+#           jenkins-build-tag="${BUILD_TAG}" \
+#           jenkins-build-url="${BUILD_URL}"
+    ARG:
+      paramSyntaxRegex: /^\w+=?.+$/
+      rules:
+        -
+          label: "default_value"
+          regex: /[=]/
+          level: "error"
+          inverse_rule: true
+          message: "Default values are required"
+          description: "All ARG statements must have default values. That way that are not required build arguments for development"
+          #reference_url:
+  required_instructions:
+    -
+      instruction: ARG
+      count: 1
+      description: "ARG statements are required for dynamic variables"
+      level: error
+      message: "No ARGs are defined"
+      #reference_url:
+    -
+      instruction: LABEL
+      count: 1
+      description: "Labels are required...."
+      level: error
+      message: "No LABELs are defined"
+      reference_url:
+        - "https://docs.docker.com/reference/builder/"
+        - "#label"
