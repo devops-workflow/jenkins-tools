@@ -115,6 +115,7 @@ envs=$(pyenv virtualenvs --skip-aliases --bare)
 for E in ${envs}; do
   if [ "${params[env_name]}" == "${E##*/}" ]; then
     found=1
+    # FIX: Need to verify hash element exists first
     if [ ${params[rebuild]} -eq 1 -o "${params[python_version]}" != ${E%%/*} ]; then
       echo "Rebuilding virtual environment for: ${params[python_version]} $${params[env_name]}"
       pyenv virtualenv-delete -f "${params[env_name]}"
@@ -136,6 +137,7 @@ if [ $(pyenv virtualenvs | grep ${params[env_name]} | wc -l) = 0 ]; then
 fi
 
 pyenv activate "${params[env_name]}"
+# FIX: only upgrade if not latest
 #pip install --upgrade pip
 
 ###
@@ -160,12 +162,13 @@ fi
 # If latest, update all outdated packages
 # This can causes some packages to be too new and cause others to fails
 # TODO: figure out better way
-if [ ${params[pkgs_latest]} -eq 1 ]; then
-  pkgs_to_upgrade=$(pip list --outdated | awk '{ print $1 }')
-  if [ -n "${pkgs_to_upgrade}" ]; then
-    pip install --upgrade ${pkgs_to_upgrade}
-  fi
-fi
+# FIX: need to verify hash element exists first
+#if [ ${params[pkgs_latest]} -eq 1 ]; then
+#  pkgs_to_upgrade=$(pip list --outdated | awk '{ print $1 }')
+#  if [ -n "${pkgs_to_upgrade}" ]; then
+#    pip install --upgrade ${pkgs_to_upgrade}
+#  fi
+#fi
 
 ###
 ### Validate
