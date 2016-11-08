@@ -6,7 +6,8 @@ listener.logger.println("DEBUG: Node: ''" + nodeName + "'' Label: ''" + labelNam
 
 //for (node in jenkins.model.Jenkins.instance.nodes) {
 // Doesn't include master
-for (node in jenkins.model.Nodes.getNodes()) {
+//for (node in jenkins.model.Nodes.getNodes()) {
+for (node in jenkins.model.Jenkins.getNodes()) {
     listener.logger.println("DEBUG: Checking node '" + node.getNodeName() + "' for match")
     if (node.getNodeName().equals(nodeName)) {
         listener.logger.println("Found node to update: " + nodeName)
