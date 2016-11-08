@@ -1,8 +1,8 @@
-nodeName = build.buildVariableResolver.resolve('NodeToUpdate')
-labelName = build.buildVariableResolver.resolve('LabelName')
-set = build.buildVariableResolver.resolve('DesiredState')
+nodeName = NodeToUpdate
+labelName = LabelName
+set = DesiredState
 listener.logger.println("Running label updater")
-listener.logger.println("Node: " + nodeName + "Label: " + labelName + "Set: " + set)
+listener.logger.println("Node: " + nodeName + " Label: " + labelName + " Set: " + set)
 
 for (node in jenkins.model.Jenkins.instance.nodes) {
     if (node.getNodeName().equals(nodeName)) {
