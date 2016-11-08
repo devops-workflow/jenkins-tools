@@ -2,7 +2,7 @@ nodeName = NodeToUpdate
 labelName = LabelName
 set = DesiredState
 listener.logger.println("Running label updater...")
-listener.logger.println("DEBUG: Node: ''" + nodeName + "'' Label: ''" + labelName + "'' Set: ''" + set +"'")
+listener.logger.println("DEBUG: Node: ''" + nodeName + "'' Label: ''" + labelName + "'' Set: ''" + set + "'")
 
 for (node in jenkins.model.Jenkins.instance.nodes) {
 // Doesn't include master
