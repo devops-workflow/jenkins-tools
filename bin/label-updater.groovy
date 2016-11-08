@@ -1,7 +1,15 @@
+
 nodeName = NodeToUpdate
 labelName = LabelName
 set = DesiredState
 listener.logger.println("Running label updater...")
+// Plugin doesn't support build env variables for parameters. Need to handle here
+if (nodeName.equals('ENV')) {
+  nodeName = build.getEnvironment(listener).get('NODE_NAME')
+}
+if (labelName.equals('ENV')) {
+  labelName = build.getEnvironment(listener).get('LabelName')
+}
 listener.logger.println("DEBUG: Node: ''" + nodeName + "'' Label: ''" + labelName + "'' Set: ''" + set + "'")
 
 for (node in jenkins.model.Jenkins.instance.nodes) {
