@@ -116,11 +116,11 @@ for E in ${envs}; do
   if [ "${params[env_name]}" == "${E##*/}" ]; then
     found=1
     # FIX: Need to verify hash element exists first
-    if [ ${params[rebuild]} -eq 1 -o "${params[python_version]}" != ${E%%/*} ]; then
-      echo "Rebuilding virtual environment for: ${params[python_version]} $${params[env_name]}"
-      pyenv virtualenv-delete -f "${params[env_name]}"
-      pyenv virtualenv "${params[python_version]}" "${params[env_name]}"
-    fi
+    #if [ ${params[rebuild]} -eq 1 -o "${params[python_version]}" != ${E%%/*} ]; then
+    #  echo "Rebuilding virtual environment for: ${params[python_version]} $${params[env_name]}"
+    #  pyenv virtualenv-delete -f "${params[env_name]}"
+    #  pyenv virtualenv "${params[python_version]}" "${params[env_name]}"
+    #fi
   fi
 done
 if [ "${found}" != "1" ]; then
