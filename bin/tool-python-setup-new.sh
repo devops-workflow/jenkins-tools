@@ -89,9 +89,9 @@ fi
 
 ## Update PyEnv
 pyenv update
-pushd $PYENV_ROOT/plugins/pyenv-virtualenv
-git pull
-popd
+#pushd $PYENV_ROOT/plugins/pyenv-virtualenv
+#git pull
+#popd
 
 ## Initialize PyEnv and virtualenv
 eval "$(pyenv init -)"
