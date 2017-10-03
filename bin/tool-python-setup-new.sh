@@ -8,8 +8,15 @@
 
 # Requirements:
 #  git, curl
-#  $HOME set to jenkins dir
+#  $NODE_HOME set to jenkins dir
 #
+
+# TODO:
+#   Add remove environment
+#   Get rebuild environment working
+#   Add update/upgrade packages
+#   Add -h, --help
+#   Make work for developers/QA/etc as well as Jenkins
 
 function usage() {
   cat <<USAGE
@@ -69,7 +76,7 @@ getParameters $@
 # TODO: validate parameters
 
 ## Install PyEnv
-export PYENV_ROOT="${HOME}/.pyenv"
+export PYENV_ROOT="${NODE_HOME}/.pyenv"
 export PATH="${PYENV_ROOT}/bin:${PATH}"
 if [ ! -d "${PYENV_ROOT}" ]; then
   echo "Installing PyEnv..."
@@ -98,6 +105,9 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
+# Setup command completion
+# . $PYENV_ROOT/completions/pyenv.bash
+
 ## Install Python version. If needed
 if [ $(pyenv versions --skip-aliases --bare | grep ${params[python_version]} | wc -l) = 0 ]; then
   pyenv install ${params[python_version]}
@@ -106,6 +116,8 @@ if [ $(pyenv versions --skip-aliases --bare | grep ${params[python_version]} | w
     exit 1
   fi
 fi
+
+# pyenv rehash
 
 ## Create Virtual Environment. If needed
 # TODO:
@@ -143,6 +155,9 @@ pyenv activate "${params[env_name]}"
 ###
 ### Install and upgrade packages
 ###
+# FIX: Sometime this doesn't install all packages
+# For "beautifulsoup4 lxml requests xmlrunner" only beautifulsoup4 was installed
+#   Requires , seperated ??
 # Ensure all requested packages are installed
 declare -A pkgs_installed pkgs_to_install
 for pkg in $(pip freeze); do

@@ -4,8 +4,8 @@
 if [ -d "${JENKINS_HOME}" ]; then
   # or [ "${NODE_NAME}" = "master" ]
   # Jenkins master
-  home=${JENKINS_HOME}
+  NODE_HOME=${JENKINS_HOME}
 else
   # Jenkins build slave
-  home=${WORKSPACE%%/workspace*}
+  NODE_HOME=${WORKSPACE%%/workspace*}
 fi

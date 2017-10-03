@@ -8,12 +8,12 @@
 
 . bin/source-home.sh
 
-echo "INFO: Destination HOME: ${home}"
+echo "INFO: Destination HOME: ${NODE_HOME}"
 if [ -d ${WORKSPACE}/bin ]; then
   echo "INFO: Copying bin..."
-  cp -afu ${WORKSPACE}/bin ${home}
+  cp -afu ${WORKSPACE}/bin ${NODE_HOME}
 fi
 if [ -d ${WORKSPACE}/etc ]; then
   echo "INFO: Copying etc..."
-  cp -afu ${WORKSPACE}/etc ${home}
+  cp -afu ${WORKSPACE}/etc ${NODE_HOME}
 fi

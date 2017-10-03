@@ -7,12 +7,18 @@
 echo "Creating docker build arguments..."
 
 dockerDir=.
-dockerFile=${dockerDir}/Dockerfile
+if [ -n "${dockerfilePath}" ]; then
+  # Support passing in Dockerfile path by env variable
+  dockerFile=${dockerfilePath}
+else
+  dockerFile=${dockerDir}/Dockerfile
+fi
 
 tmpdir=${WORKSPACE}/tmp
 buildName=${tmpdir}/buildName
 dockerBuildArgs=${tmpdir}/dockerBuildArgs
 dockerImageId=${tmpdir}/dockerImageId
+dockerImageName=${tmpdir}/dockerImageName
 dockerTags=${tmpdir}/dockerTags
 dockerTagsOnly=${tmpdir}/dockerTagsOnly
 versionFile=${tmpdir}/version
@@ -45,13 +51,22 @@ echo "${VERSION}" > ${versionFile}
 #fi
 REPOSITORY=${repository}
 
+# Determine image name
+suffix="${dockerFile##*Dockerfile}"
+if [ -n "${suffix}" ]; then
+  imageName="${suffix##-}"
+else
+  imageName=${repository}
+fi
+echo "${imageName}" > ${dockerImageName}
+
 # Clean host of old image files in job
 if [ -d ${imageDir} ]; then
  rm -rf ${imageDir}/*
 fi
 # Clean host of old images in Docker
-echo "Removing images for: ${repository}..."
-for I in $(docker images --format "{{.ID}}" ${repository} | sort -u); do
+echo "Removing images for: ${imageName}..."
+for I in $(docker images --format "{{.ID}}" ${imageName} | sort -u); do
   docker rmi -f $I
 done
 # TODO: Improve and remove all untagged images.
@@ -81,9 +96,9 @@ buildTags=''
 #done
 # Add standard build tags
 # remove latest if use plugin
-buildTags="${repository}:${VERSION} ${repository}:${BUILD_NUMBER} ${repository}:latest ${buildTags}"
+buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:latest ${buildTags}"
 #buildTagsOnly="${VERSION} ${BUILD_NUMBER} ${buildTagsOnly}"
-cmdTags="-t ${repository}:${VERSION} -t ${repository}:${BUILD_NUMBER} -t ${repository}:latest ${cmdTags}"
+cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:latest ${cmdTags}"
 echo "DEBUG: Tags=${cmdTags}"
 echo "#${BUILD_NUMBER} ${buildTags}" > ${buildName}
 #echo "${buildTags}" > ${dockerTags}
