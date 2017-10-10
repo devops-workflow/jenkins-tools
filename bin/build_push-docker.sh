@@ -26,6 +26,7 @@ if [ -z "${dockerFile}" ]; then
 else
   echo "Dockerfile: ${dockerFile}"
 fi
+dockerDir="${dockerFile%/Dockerfile}"
 #popd 2>&1 >/dev/null
 #done
 
@@ -93,6 +94,7 @@ echo "DEBUG: build command Tags=${cmdTags}"
 #echo "${cmdTags}" >> ${dockerBuildArgs}
 
 ### Build: docker image
+cd ${dockerDir}
 docker build ${cmdTags} .
 
 ### Tag and Push Docker image
