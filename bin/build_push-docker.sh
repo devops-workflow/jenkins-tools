@@ -103,6 +103,8 @@ docker build ${cmdTags} .
 ### Tag and Push Docker image
 aws_login=$(aws ecr get-login --region $AWS_REGION)
 aws_url="${aws_login##*https://}"
+${aws_login}
+# FIX no basic auth cred, need docker login. Above not handle ??
 for T in ${buildTags}; do
   target=${aws_url}/${T}
   docker tag ${T} ${target}
