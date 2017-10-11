@@ -33,6 +33,7 @@ dockerDir="${dockerFile%/Dockerfile}"
 echo "Creating docker build arguments..."
 ### Setup variables
 BUILD_DATE=$(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)
+TAG_DATE=$(date --utc +%Y-%m-%dT%H:%M:%S)
 GIT_URL="${GIT_URL%.git}"
 # VERSION - need to be read in from a file and/or git
 # Commit: git rev-parse --short HEAD
@@ -82,11 +83,12 @@ buildTags=''
 # remove latest if use plugin
 # docker tag
 #tagList=
-buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:latest ${buildTags}"
+buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:${TAG_DATE} ${imageName}:latest ${buildTags}"
 #buildTagsOnly="${VERSION} ${BUILD_NUMBER} ${buildTagsOnly}"
 #docker build
 #buildTags=
-cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:latest ${cmdTags}"
+cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:${TAG_DATE} -t ${imageName}:latest ${cmdTags}"
+#cmdTags="-t ${imageName}:latest"
 echo "DEBUG: list Tags=${buildTags}"
 echo "DEBUG: build command Tags=${cmdTags}"
 #echo "#${BUILD_NUMBER} ${buildTags}" > ${buildName}
