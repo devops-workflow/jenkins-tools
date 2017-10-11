@@ -58,7 +58,8 @@ REPOSITORY=${repository}
 #if [ -n "${suffix}" ]; then
 #  imageName="${suffix##-}"
 #else
-  imageName=${repository}
+  # Must be lowercase
+  imageName="${repository,,}"
 #fi
 ## Build command line for ARG variable assignments
 cmdArgs=''
