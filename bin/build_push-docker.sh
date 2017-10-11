@@ -88,7 +88,6 @@ buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:${T
 #docker build
 #buildTags=
 cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:${TAG_DATE} -t ${imageName}:latest ${cmdTags}"
-#cmdTags="-t ${imageName}:latest"
 echo "DEBUG: list Tags=${buildTags}"
 echo "DEBUG: build command Tags=${cmdTags}"
 #echo "#${BUILD_NUMBER} ${buildTags}" > ${buildName}
@@ -98,13 +97,12 @@ echo "DEBUG: build command Tags=${cmdTags}"
 
 ### Build: docker image
 cd ${dockerDir}
-docker build ${cmdTags} .
+docker build ${cmdTags} ${cmdArgs} .
 
 ### Tag and Push Docker image
 aws_login=$(aws ecr get-login --region $AWS_REGION)
 aws_url="${aws_login##*https://}"
 ${aws_login}
-# FIX no basic auth cred, need docker login. Above not handle ??
 for T in ${buildTags}; do
   target=${aws_url}/${T}
   docker tag ${T} ${target}
