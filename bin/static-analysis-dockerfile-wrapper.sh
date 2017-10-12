@@ -34,7 +34,7 @@ mkdir -p ${reportsDir}
 static-analysis-dockerfile-dockerlint.sh
 static-analysis-dockerfile-lynis.sh
 static-analysis-dockerfile-lint.sh
-static-analysis-dockerfile-whale-linter.sh
+#static-analysis-dockerfile-whale-linter.sh
 
 printf "=%.s" {1..30}
 echo -e "\nFinished Dockerfile testing."

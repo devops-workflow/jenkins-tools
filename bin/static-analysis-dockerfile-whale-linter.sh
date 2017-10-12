@@ -23,6 +23,7 @@ mkdir -p ${reportsDir}
 printf "=%.s" {1..3}
 echo -e "Running whale-linter...\n"
 docker run -i --rm jeromepin/whale-linter --version
+# Issue with '+' i file path ??
 docker run -i --rm -v ${WORKSPACE}/${dockerFile}:/Dockerfile jeromepin/whale-linter | tee ${reportsDir}/whale-linter.output
 
 #chmod +x ${tmpdir}/parse-whale-linter.sh
