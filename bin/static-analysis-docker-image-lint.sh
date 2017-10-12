@@ -10,7 +10,7 @@ imageDir=output-images
 reportsDir=reports
 versionFile=${tmpdir}/version
 GIT_URL="${GIT_URL%.git}"
-dockerImageID=${tmpdir}/dockerImageID
+dockerImageID=$(cat ${tmpdir}/dockerImageID)
 
 mkdir -p ${tmpdir} ${reportsDir}
 

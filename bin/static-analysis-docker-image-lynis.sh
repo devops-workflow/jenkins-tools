@@ -9,7 +9,7 @@ tmpdir=tmp
 imageDir=output-images
 reportsDir=reports
 versionFile=${tmpdir}/version
-imageFile=${tmpdir}/imageFile
+imageFile=$(cat ${tmpdir}/imageFile)
 GIT_URL="${GIT_URL%.git}"
 
 mkdir -p ${tmpdir} ${reportsDir}
