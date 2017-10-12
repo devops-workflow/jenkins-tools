@@ -33,7 +33,7 @@ dockerDir="${dockerFile%/Dockerfile}"
 echo "Creating docker build arguments..."
 ### Setup variables
 BUILD_DATE=$(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)
-TAG_DATE=$(date --utc +%Y-%m-%d)
+TAG_DATE=$(date --utc +%Y-%m-%d_%H_%M_%S)
 GIT_URL="${GIT_URL%.git}"
 # VERSION - need to be read in from a file and/or git
 # Commit: git rev-parse --short HEAD
