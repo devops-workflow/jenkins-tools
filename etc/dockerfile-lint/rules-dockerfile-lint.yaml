@@ -30,6 +30,7 @@
           reference_url:
             - "https://docs.docker.com/reference/builder/"
             - "#from"
+        -
           label: "no_tag"
           regex: /^[:]/
           level: "error"
@@ -38,6 +39,7 @@
           reference_url:
             - "https://docs.docker.com/reference/builder/"
             - "#from"
+        -
           label: "specified_registry"
           regex: /[\w]+?\.[\w-]+(\:|\.)([\w.]+|(\d+)?)([/?:].*)?/
           level: "info"
@@ -56,12 +58,13 @@
         # OS Packaging cleanup rules
         #
         # RedHat (RPM)
+        # TODO: don't install doc (yum install -y mysql --setopt=tsflags=nodocs)
         -
           label: "no_yum_clean_all"
           regex: /yum(?!.+clean all|.+\.repo|-config|\.conf)/
           level: "warn"
           message: "yum clean all is not used"
-          description: "the yum cache will remain in this layer making the layer unnecessarily large"
+          description: "The yum cache will remain in this layer making the layer unnecessarily large"
           reference_url:
             - "http://docs.projectatomic.io/container-best-practices/#"
             - "_clear_packaging_caches_and_temporary_package_downloads"
@@ -79,7 +82,7 @@
           regex: /dnf(?!.+clean all|.+\.repo)/g
           level: "warn"
           message: "dnf clean all is not used"
-          description: "the dnf cache will remain in this layer making the layer unnecessarily large"
+          description: "The dnf cache will remain in this layer making the layer unnecessarily large"
           reference_url:
             - "http://docs.projectatomic.io/container-best-practices/#"
             - "_clear_packaging_caches_and_temporary_package_downloads"
@@ -90,7 +93,7 @@
           regex: /apt-get install(?!.+clean)/g
           level: "info"
           message: "apt-get clean is not used"
-          description: "the apt-get cache will remain in this layer making the layer unnecessarily large"
+          description: "The apt-get cache will remain in this layer making the layer unnecessarily large"
           reference_url:
             - "http://docs.projectatomic.io/container-best-practices/#"
             - "_clear_packaging_caches_and_temporary_package_downloads"
@@ -101,12 +104,15 @@
         #
         # Ruby
         # TODO: installing gems without doc or code to remove doc afterwards
+        # echo "gem: --no-ri --no-rdoc --no-document" > ~/.gemrc && \
+        # rvm disk-usage all
+        # Also, clean yum after rvm
         -
           label: "no_rvm_cleanup_all"
           regex: /rvm install(?!.+cleanup all)/g
           level: "warn"
           message: "rvm cleanup is not used"
-          description: "the rvm cache will remain in this layer making the layer unnecessarily large"
+          description: "The rvm cache will remain in this layer making the layer unnecessarily large"
           reference_url:
             - "http://docs.projectatomic.io/container-best-practices/#"
             - "_clear_packaging_caches_and_temporary_package_downloads"
@@ -115,18 +121,29 @@
           regex: /gem install(?!.+cleanup|.+\rvm cleanup all)/g
           level: "warn"
           message: "gem cleanup all is not used"
-          description: "the gem cache will remain in this layer making the layer unnecessarily large"
+          description: "The gem cache will remain in this layer making the layer unnecessarily large"
           reference_url:
             - "http://docs.projectatomic.io/container-best-practices/#"
             - "_clear_packaging_caches_and_temporary_package_downloads"
         # NodeJS
-        # no_npm_clean
-        ## npm cache clean
-        #   regex: /npm install(?!.+cache clean)/g
+        ## npm cache clean --force
+        -
+          label: "no_npm_cache_clean"
+          regex: /npm install(?!.+cache clean)/g
+          level: "warn"
+          message: "npm cache clean is not used"
+          description: "The npm cache will remain in this layer making the layer unnecessarily large"
+          reference_url:
+            - "https://docs.npmjs.com/cli/cache"
         # Python
-        # no_pip_clean
-        ## rm -rf .cache/pip/*
-        #   regex: /pip install(?!.+rm -rf.+\.cache\/pip)/g
+        ## rm -rf .cache/pip
+        -
+          label: "no_pip_clean"
+          regex: /pip install(?!.+rm -rf.+\.cache\/pip)/g
+          level: "warn"
+          message: "pip cache is not removed"
+          description: "The pip cache will remain in this layer making the layer unnecessarily large"
+          reference_url:
         # Perl
         # no_cpan_clean
         ## rm -rf .cpan/{build,sources}/*
@@ -212,3 +229,21 @@
       reference_url:
         - "https://docs.docker.com/reference/builder/"
         - "#cmd"
+    #-
+    #  instruction: "ENTRYPOINT"
+    #  count: 1
+    #  level: "info"
+    #  message: "There is no 'ENTRYPOINT' instruction"
+    #  description: "None"
+    #  reference_url:
+    #    - "https://docs.docker.com/engine/reference/builder/"
+    #    - "#entrypoint"
+    #-
+    #  instruction: "USER"
+    #  count: 1
+    #  level: "warn"
+    #  message: "No 'USER' instruction"
+    #  description: "The process(es) within the container may run as root and RUN instructions my be run as root"
+    #  reference_url:
+    #    - "https://docs.docker.com/engine/reference/builder/"
+    #    - "#user"
