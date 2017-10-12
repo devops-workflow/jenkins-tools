@@ -30,6 +30,7 @@ dockerDir="${dockerFile%/Dockerfile}"
 #popd 2>&1 >/dev/null
 #done
 
+mkdir -p tmp
 echo "Creating docker build arguments..."
 ### Setup variables
 BUILD_DATE=$(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)
@@ -45,6 +46,7 @@ if [ -n "$(git tag)" ]; then
 else
   VERSION="0.0.0-$(git rev-list HEAD --count)-$(git rev-parse --short HEAD)"
 fi
+echo "${VERSION}" > tmp/version
 gitRepo="${GIT_URL##*/}"
 gitOrg="${GIT_URL##*.com/}"
 gitOrg="${gitOrg%%/*}"

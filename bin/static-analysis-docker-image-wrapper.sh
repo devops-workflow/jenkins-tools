@@ -20,11 +20,16 @@ mkdir -p ${tmpdir} ${reportsDir}
   gitRepo="${GIT_URL##*/}"
   gitOrg="${GIT_URL##*.com/}"
   gitOrg="${gitOrg%%/*}"
-  repository="${gitOrg}/${gitRepo}"
   #echo "ERROR: No image name found in Dockerfile. Using: ${repository}"
 #fi
+if [ -n "${namespace}" ]; then
+  repository="${namespace}/${gitRepo}"
+else
+  repository="${gitOrg}/${gitRepo}"
+fi
+
 VERSION=$(cat ${versionFile})
-dockerImage="${repository}:${VERSION}"
+dockerImage="${repository,,}:${VERSION}"
 dockerImageID=$(docker images --format '{{.ID}}' ${dockerImage})
 
 # Save image to file for scanning tools
