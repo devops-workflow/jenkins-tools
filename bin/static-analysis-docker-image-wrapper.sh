@@ -39,6 +39,7 @@ imageFilename="${repository//\//-}-${VERSION}.tar"
 imageFile="${imageDir}/${imageFilename}"
 mkdir -p ${imageDir}
 docker save -o ${imageFile} ${repository}
+echo "${imageFile}" > ${tmpdir}/imageFile
 
 ###
 ### Image Scanning
