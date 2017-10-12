@@ -35,7 +35,7 @@
           regex: /[^:]/
           level: "error"
           message: "No tag is used"
-          description: "lorem ipsum tar"
+          description: "Base image should be tagged. Then you know what you're building from"
           reference_url:
             - "https://docs.docker.com/reference/builder/"
             - "#from"
