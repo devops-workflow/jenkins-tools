@@ -31,6 +31,7 @@ fi
 VERSION=$(cat ${versionFile})
 dockerImage="${repository,,}:${VERSION}"
 dockerImageID=$(docker images --format '{{.ID}}' ${dockerImage})
+echo "${dockerImageID}" > ${tmpdir}/dockerImageID
 
 # Save image to file for scanning tools
 echo "Saving Docker Image..."
