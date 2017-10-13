@@ -3,20 +3,39 @@
 # Setup everything for building a docker image
 # Create the command line with variable assignments for all the ARG and TAG fields found in the Dockerfile
 #
+# Designed to run under Jenkins. Depends on environment variables that Jenkins sets.
+# Optional ENV vars:
+#   dockerfilePath  Specifies where the Dockerfile is
+#   namespace       Namespace for the docker image
 
 echo "Creating docker build arguments..."
 
-dockerDir=.
+### Find Dockerfile
+dockerDirs="infrastructure/docker docker . docker/production"
 if [ -n "${dockerfilePath}" ]; then
   # Support passing in Dockerfile path by env variable
   dockerFile=${dockerfilePath}
 else
-  dockerFile=${dockerDir}/Dockerfile
+  for DF in ${dockerDirs}; do
+    if [ -f "${DF}/Dockerfile" ]; then
+      dockerFile=${DF}/Dockerfile
+      break
+    fi
+  done
 fi
+if [ -z "${dockerFile}" ]; then
+  echo "ERROR: Dockerfile NOT found"
+  #exit 1
+else
+  echo "Dockerfile: ${dockerFile}"
+fi
+dockerDir="${dockerFile%/Dockerfile}"
 
 tmpdir=${WORKSPACE}/tmp
 buildName=${tmpdir}/buildName
 dockerBuildArgs=${tmpdir}/dockerBuildArgs
+dockerBuildArgsTags=${tmpdir}/dockerBuildArgsTags
+dockerBuildArgsVars=${tmpdir}/dockerBuildArgsVars
 dockerImageId=${tmpdir}/dockerImageId
 dockerImageName=${tmpdir}/dockerImageName
 dockerTags=${tmpdir}/dockerTags
@@ -26,8 +45,11 @@ imageDir=output-images
 
 mkdir -p ${tmpdir}
 
-# Setup variables
+echo "Creating docker build arguments..."
+### Setup variables
+echo "${dockerDir}" > ${tmpdir}/dockerDir
 BUILD_DATE=$(date --utc +%Y-%m-%dT%H:%M:%S.%NZ)
+TAG_DATE=$(date --utc +%Y-%m-%d_%H_%M_%S)
 GIT_URL="${GIT_URL%.git}"
 # VERSION - need to be read in from a file and/or git
 # Commit: git rev-parse --short HEAD
@@ -37,7 +59,7 @@ GIT_URL="${GIT_URL%.git}"
 if [ -n "$(git tag)" ]; then
   VERSION=$(git describe --tags)
 else
-  VERSION="0.0-$(git rev-list HEAD --count)-$(git rev-parse --short HEAD)"
+  VERSION="0.0.0-$(git rev-list HEAD --count)-$(git rev-parse --short HEAD)"
 fi
 echo "${VERSION}" > ${versionFile}
 #repository=$(grep org.label-schema.name= ${dockerFile} | sed 's/.*="//;s/".*//')
@@ -46,20 +68,26 @@ echo "${VERSION}" > ${versionFile}
   gitRepo="${GIT_URL##*/}"
   gitOrg="${GIT_URL##*.com/}"
   gitOrg="${gitOrg%%/*}"
-  repository="${gitOrg}/${gitRepo}"
   #echo "ERROR: No image name found in Dockerfile. Using: ${repository}"
 #fi
+if [ -n "${namespace}" ]; then
+  repository="${namespace}/${gitRepo}"
+else
+  repository="${gitOrg}/${gitRepo}"
+fi
 REPOSITORY=${repository}
 
-# Determine image name
-suffix="${dockerFile##*Dockerfile}"
-if [ -n "${suffix}" ]; then
-  imageName="${suffix##-}"
-else
-  imageName=${repository}
-fi
+## Determine image name - Must be lowercase
+#suffix="${dockerFile##*Dockerfile}"
+#if [ -n "${suffix}" ]; then
+#  imageName="${suffix##-}"
+#else
+  imageName="${repository,,}"
+#fi
 echo "${imageName}" > ${dockerImageName}
 
+### Cleanup old artifacts
+echo "Starting cleanup of old artifacts..."
 # Clean host of old image files in job
 if [ -d ${imageDir} ]; then
  rm -rf ${imageDir}/*
@@ -77,15 +105,16 @@ for I in $(docker images -a --format "{{.ID}} {{.Tag}}" | grep '<none>' | cut -d
   docker rmi -f $I
 done
 
-# Build command line for ARG variable assignments
+### Build command line for ARG variable assignments
 cmdArgs=''
 for A in $(grep ^ARG ${dockerFile} | cut -d\  -f2 | cut -d= -f1); do
   cmdArgs="${cmdArgs} --build-arg ${A}=${!A}"
 done
 echo "DEBUG: Args=${cmdArgs}"
 echo "${cmdArgs}" > ${dockerBuildArgs}
+echo "${cmdArgs}" > ${dockerBuildArgsVars}
 
-# Build command line for addition tags from Dockerfile
+### Build command line for addition tags from Dockerfile
 cmdTags=''
 buildTags=''
 #buildTagsOnly=''
@@ -96,13 +125,22 @@ buildTags=''
 #done
 # Add standard build tags
 # remove latest if use plugin
-buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:latest ${buildTags}"
-#buildTagsOnly="${VERSION} ${BUILD_NUMBER} ${buildTagsOnly}"
-cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:latest ${cmdTags}"
-echo "DEBUG: Tags=${cmdTags}"
-echo "#${BUILD_NUMBER} ${buildTags}" > ${buildName}
-#echo "${buildTags}" > ${dockerTags}
+# docker tag
+#tagList=
+buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:${TAG_DATE} ${imageName}:latest ${buildTags}"
+#buildTagsOnly="${VERSION} ${BUILD_NUMBER} ${TAG_DATE} ${buildTagsOnly}"
+#for T in ${buildTags}; do
+#  cmdTags="${cmdTags} -t ${T}"
+#done
+#docker build
+#buildTags=
+cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:${TAG_DATE} -t ${imageName}:latest ${cmdTags}"
+echo "DEBUG: list Tags=${buildTags}"
+echo "DEBUG: build command Tags=${cmdTags}"
+#echo "#${BUILD_NUMBER} ${buildTags}" > ${buildName}
+echo "${buildTags}" > ${dockerTags}
 #echo "${buildTagsOnly}" > ${dockerTagsOnly}
 echo "${cmdTags}" >> ${dockerBuildArgs}
+echo "${cmdTags}" > ${dockerBuildArgsTags}
 
 echo "Finished creating docker build arguments."
