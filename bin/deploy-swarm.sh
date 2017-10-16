@@ -30,8 +30,16 @@ else
   echo "ERROR: No Swarm compose file found"
 fi
 
+if [ -f ${swarmDir}/STACK_NAME ]; then
+  STACK_NAME=$(cat ${swarmDir}/STACK_NAME)
+else
+  echo "WARNING: No stack name defined. Using app name."
+  STACK_NAME=${IMAGE}
+fi
+
 echo "Deploying to swarm cluster: ${ENV} ..."
+echo "Deploying as stack: ${STACK_NAME}"
 echo "Using compose file: ${swarmFile}"
 docker --version
 aws_login=$(aws ecr get-login --region ${AWS_DEFAULT_REGION})
-docker stack deploy --with-registry-auth -c ${swarmFile} ${IMAGE}
+docker stack deploy --with-registry-auth -c ${swarmFile} ${STACK_NAME}
