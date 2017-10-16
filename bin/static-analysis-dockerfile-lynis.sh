@@ -5,7 +5,7 @@
 #  lynis
 
 tmpdir=tmp
-dockerDir=.
+dockerDir=$(cat ${tmpdir}/dockerDir)
 reportsDir=reports
 if [ -n "${dockerfilePath}" ]; then
   # Support passing in Dockerfile path by env variable

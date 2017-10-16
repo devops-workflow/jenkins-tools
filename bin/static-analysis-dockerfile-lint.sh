@@ -6,7 +6,7 @@
 #    - This should be run on Dockerfile and image with different rule sets
 
 tmpdir=tmp
-dockerDir=.
+dockerDir=$(cat ${tmpdir}/dockerDir)
 configDir="${NODE_HOME}/etc"
 reportsDir=reports
 jqDir="${configDir}/jq"
