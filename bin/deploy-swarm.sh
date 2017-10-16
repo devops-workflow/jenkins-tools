@@ -26,7 +26,5 @@ else
 fi
 
 echo "Deploying to swarm cluster: ${ENV} ..."
-
-export DOCKER_HOST=swarm.${ENV}.wiser.com:4550
 aws_login=$(aws ecr get-login --region ${AWS_DEFAULT_REGION})
 docker stack deploy --with-registry-auth -c ${swarmFile} ${IMAGE}
