@@ -7,4 +7,4 @@ cmdTags=$(cat ${tmpdir}/dockerBuildArgsTags)
 dockerDir=$(cat ${tmpdir}/dockerDir)
 
 ### Build: docker image
-docker build ${cmdTags} ${cmdArgs} -f ${dockerDir}/Dockerfile.
+docker build ${cmdTags} ${cmdArgs} -f ${dockerDir}/Dockerfile .
