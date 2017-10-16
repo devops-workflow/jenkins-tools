@@ -31,5 +31,7 @@ else
 fi
 
 echo "Deploying to swarm cluster: ${ENV} ..."
+echo "Using compose file: ${swarmFile}"
+docker --version
 aws_login=$(aws ecr get-login --region ${AWS_DEFAULT_REGION})
 docker stack deploy --with-registry-auth -c ${swarmFile} ${IMAGE}
