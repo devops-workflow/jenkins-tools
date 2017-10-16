@@ -15,12 +15,11 @@ NAMESPACE="${JOB_NAME%%+*}"
 export NAMESPACE="${NAMESPACE,,}"
 tmp="${JOB_NAME#*+}"
 export IMAGE="${tmp%%+*}"
-if [ -n "$(git tag)" ]; then
-  VERSION=$(git describe --tags)
-else
-  VERSION="0.0.0-$(git rev-list HEAD --count)-$(git rev-parse --short HEAD)"
+if [ -z "${VERSION}" ]; then
+  # If no version specified.
+  echo "ERROR: Docker image version is required!!!"
+  exit 1
 fi
-export VERSION
 
 if [ -f ${swarmDir}/${IMAGE}.${ENV}.yml ]; then
   swarmFile=${swarmDir}/${IMAGE}.${ENV}.yml
