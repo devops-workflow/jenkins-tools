@@ -4,7 +4,8 @@ tmpdir=${WORKSPACE}/tmp
 dockerTags=$(cat ${tmpdir}/dockerTags)
 
 ### Tag and Push Docker image
-aws_login=$(aws ecr get-login --region $AWS_REGION)
+t=$(aws ecr get-login --region $AWS_REGION)
+aws_login=${t/-e none}
 aws_url="${aws_login##*https://}"
 ${aws_login}
 for T in ${dockerTags}; do
