@@ -21,19 +21,34 @@ if [ -z "${VERSION}" ]; then
   exit 1
 fi
 
-if [ -f ${swarmDir}/${IMAGE}.${ENV}.yml ]; then
-  swarmFile=${swarmDir}/${IMAGE}.${ENV}.yml
-elif [ -f ${swarmDir}/${IMAGE}.yml ]; then
-  swarmFile=${swarmDir}/${IMAGE}.yml
+# Figure out compose filename
+composeFiles=$(ls ${swarmDir}/*.${ENV}.yml)
+if [ $? -ne 0 ]; then
+  echo "ERROR: No Swarm compose file found for environment: ${ENV}"
+  exit 2
+elif [ $(echo ${composeFiles} | awk '{print NF}') -eq 1 ]; then
+  swarmFile=${composeFiles}
 else
-  echo "ERROR: No Swarm compose file found"
+  echo "ERROR: Only 1 swarm compose file allowed per environment"
+  exit 2
 fi
+#if [ -f ${swarmDir}/${IMAGE}.${ENV}.yml ]; then
+#  swarmFile=${swarmDir}/${IMAGE}.${ENV}.yml
+#elif [ -f ${swarmDir}/${IMAGE}.yml ]; then
+#  swarmFile=${swarmDir}/${IMAGE}.yml
+#else
+#  echo "ERROR: No Swarm compose file found"
+#fi
 
-if [ -f ${swarmDir}/STACK_NAME ]; then
-  STACK_NAME=$(cat ${swarmDir}/STACK_NAME)
-else
-  echo "WARNING: No stack name defined. Using app name."
+# Get swarm stack name
+swarmFilename="${swarmFile##*/}"
+STACK_NAME="${swarmFilename%%.*}"
+if [ -z "${STACK_NAME}" -o "${STACK_NAME}" == "${swarmFilename}" ]; then
+  echo "ERROR: No stack name found. Using app name."
   STACK_NAME=${IMAGE}
+#elif [ "${STACK_NAME}" == "${ENV}" ]; then
+#  echo "ERROR: Got environment name for stack name. Not allowed"
+#  exit 3
 fi
 
 echo "Deploying to swarm cluster: ${ENV} ..."

@@ -144,3 +144,43 @@ echo "${cmdTags}" >> ${dockerBuildArgs}
 echo "${cmdTags}" > ${dockerBuildArgsTags}
 
 echo "Finished creating docker build arguments."
+# if no labels in file, add them
+grep '^# METADATA Section' ${dockerFile}
+if [ $? -ne 0 ]; then
+  echo "Adding LABEL definitions to Dockerfile"
+  cat <<LABELS >>${dockerFile}
+# METADATA Section
+###
+### Setup both static and dynamic build time metadata
+###
+# ARG variables must match build environment variables or variables created in build script
+# ARG variables must have default values so developers are not required to set via cli
+# All built time environment variables are accessible
+# Build script currently creates: BUILD_DATE, REPOSITORY, TAG_DATE, VERSION
+# Labels definitions/suggestions at:
+#   http://label-schema.org
+#   https://github.com/projectatomic/ContainerApplicationGenericLabels/
+
+ARG BUILD_DATE=2000-01-01
+ARG BUILD_NUMBER=1
+ARG BUILD_TAG=dev
+ARG BUILD_URL=dev
+ARG GIT_COMMIT=dev
+ARG GIT_URL=dev
+ARG JOB_NAME=dev
+ARG REPOSITORY=dev/proj
+ARG VERSION=0.0.1
+LABEL org.label-schema.build-date="\${BUILD_DATE}" \
+ org.label-schema.name="\${REPOSITORY}" \
+ org.label-schema.description="${gitRepo}" \
+ org.label-schema.vendor="Wiser Solutions" \
+ org.label-schema.version="\${VERSION}" \
+ org.label-schema.vcs-ref="\${GIT_COMMIT}" \
+ org.label-schema.vcs-url="\${GIT_URL}" \
+ org.label-schema.schema-version="1.0" \
+ com.wiser.jenkins-job="\${JOB_NAME}" \
+ com.wiser.jenkins-build="\${BUILD_NUMBER}" \
+ com.wiser.jenkins-build-tag="\${BUILD_TAG}" \
+ com.wiser.jenkins-build-url="\${BUILD_URL}"
+LABELS
+fi
