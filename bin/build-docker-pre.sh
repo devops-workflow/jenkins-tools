@@ -105,45 +105,6 @@ for I in $(docker images -a --format "{{.ID}} {{.Tag}}" | grep '<none>' | cut -d
   docker rmi -f $I
 done
 
-### Build command line for ARG variable assignments
-cmdArgs=''
-for A in $(grep ^ARG ${dockerFile} | cut -d\  -f2 | cut -d= -f1); do
-  cmdArgs="${cmdArgs} --build-arg ${A}=${!A}"
-done
-echo "DEBUG: Args=${cmdArgs}"
-echo "${cmdArgs}" > ${dockerBuildArgs}
-echo "${cmdArgs}" > ${dockerBuildArgsVars}
-
-### Build command line for addition tags from Dockerfile
-cmdTags=''
-buildTags=''
-#buildTagsOnly=''
-#for T in $(grep -E '[ #]TAG=' ${dockerFile} | sed 's/^.*TAG=//'); do
-#  buildTags="${buildTags} ${T}"
-#  buildTagsOnly="${buildTagsOnly} ${T}"
-#  cmdTags="${cmdTags} -t ${T}"
-#done
-# Add standard build tags
-# remove latest if use plugin
-# docker tag
-#tagList=
-buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:${TAG_DATE} ${imageName}:latest ${buildTags}"
-#buildTagsOnly="${VERSION} ${BUILD_NUMBER} ${TAG_DATE} ${buildTagsOnly}"
-#for T in ${buildTags}; do
-#  cmdTags="${cmdTags} -t ${T}"
-#done
-#docker build
-#buildTags=
-cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:${TAG_DATE} -t ${imageName}:latest ${cmdTags}"
-echo "DEBUG: list Tags=${buildTags}"
-echo "DEBUG: build command Tags=${cmdTags}"
-#echo "#${BUILD_NUMBER} ${buildTags}" > ${buildName}
-echo "${buildTags}" > ${dockerTags}
-#echo "${buildTagsOnly}" > ${dockerTagsOnly}
-echo "${cmdTags}" >> ${dockerBuildArgs}
-echo "${cmdTags}" > ${dockerBuildArgsTags}
-
-echo "Finished creating docker build arguments."
 # if no labels in file, add them
 grep '^# METADATA Section' ${dockerFile}
 if [ $? -ne 0 ]; then
@@ -184,3 +145,43 @@ LABEL org.label-schema.build-date="\${BUILD_DATE}" \
  com.wiser.jenkins-build-url="\${BUILD_URL}"
 LABELS
 fi
+
+### Build command line for ARG variable assignments
+cmdArgs=''
+for A in $(grep ^ARG ${dockerFile} | cut -d\  -f2 | cut -d= -f1); do
+  cmdArgs="${cmdArgs} --build-arg ${A}=${!A}"
+done
+echo "DEBUG: Args=${cmdArgs}"
+echo "${cmdArgs}" > ${dockerBuildArgs}
+echo "${cmdArgs}" > ${dockerBuildArgsVars}
+
+### Build command line for addition tags from Dockerfile
+cmdTags=''
+buildTags=''
+#buildTagsOnly=''
+#for T in $(grep -E '[ #]TAG=' ${dockerFile} | sed 's/^.*TAG=//'); do
+#  buildTags="${buildTags} ${T}"
+#  buildTagsOnly="${buildTagsOnly} ${T}"
+#  cmdTags="${cmdTags} -t ${T}"
+#done
+# Add standard build tags
+# remove latest if use plugin
+# docker tag
+#tagList=
+buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:${TAG_DATE} ${imageName}:latest ${buildTags}"
+#buildTagsOnly="${VERSION} ${BUILD_NUMBER} ${TAG_DATE} ${buildTagsOnly}"
+#for T in ${buildTags}; do
+#  cmdTags="${cmdTags} -t ${T}"
+#done
+#docker build
+#buildTags=
+cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:${TAG_DATE} -t ${imageName}:latest ${cmdTags}"
+echo "DEBUG: list Tags=${buildTags}"
+echo "DEBUG: build command Tags=${cmdTags}"
+#echo "#${BUILD_NUMBER} ${buildTags}" > ${buildName}
+echo "${buildTags}" > ${dockerTags}
+#echo "${buildTagsOnly}" > ${dockerTagsOnly}
+echo "${cmdTags}" >> ${dockerBuildArgs}
+echo "${cmdTags}" > ${dockerBuildArgsTags}
+
+echo "Finished creating docker build arguments."
