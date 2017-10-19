@@ -23,7 +23,7 @@
             - "https://docs.docker.com/reference/builder/"
             - "#from"
           label: "no_tag"
-          regex: /^[:]/
+          regex: /^[^:]+$/
           level: "error"
           message: "No tag is used"
           description: "lorem ipsum tar"
