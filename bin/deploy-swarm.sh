@@ -57,4 +57,6 @@ echo "Using compose file: ${swarmFile}"
 docker --version
 #aws_login=$(aws ecr get-login --region ${AWS_DEFAULT_REGION})
 #docker stack deploy --with-registry-auth -c ${swarmFile} ${STACK_NAME}
+echo "Deploy CMD: docker stack deploy -c ${swarmFile} ${STACK_NAME}"
 docker stack deploy -c ${swarmFile} ${STACK_NAME}
+echo "Exit code: $?"
