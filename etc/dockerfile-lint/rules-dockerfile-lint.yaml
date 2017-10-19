@@ -47,7 +47,7 @@
         #  description: "using a specified registry may supply invalid or unexpected base images"
         #  reference_url:
         #    - "https://docs.docker.com/reference/builder/"
-        #    - "#entrypoint"
+        #    - "#from"
     MAINTAINER:
       paramSyntaxRegex: /.+/
       rules: []
@@ -183,6 +183,10 @@
       rules: []
     ADD:
       paramSyntaxRegex: /^~?([\w-.~:/?#\[\]\\\/*@!$&'()*+,;=.{}"]+[\s]*)+$/
+      # TODO: recommend COPY instead if not URL (http/https) or
+      # tar archive (tar/gz/tgz/xz/bzip)
+    #CMD:
+    #  # recommend array instead of shell form
     COPY:
       paramSyntaxRegex: /.+/
       rules: []
