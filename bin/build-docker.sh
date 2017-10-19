@@ -9,4 +9,8 @@ dockerDir=$(cat ${tmpdir}/dockerDir)
 ### Build: docker image
 echo "Build CMD: docker build ${cmdTags} ${cmdArgs} -f ${dockerDir}/Dockerfile ."
 docker build ${cmdTags} ${cmdArgs} -f ${dockerDir}/Dockerfile .
-echo "Exit code: $?"
+exitCode=$?
+if [ ${exitCode} -ne 0 ]; then
+  echo "ERROR: docker build failed!! Exit code: ${exitCode}"
+  exit 1
+fi
