@@ -32,7 +32,7 @@
             - "#from"
         -
           label: "no_tag"
-          regex: /[^:]/
+          regex: /^[^:]+$/
           level: "error"
           message: "No tag is used"
           description: "Base image should be tagged. Then you know what you're building from"
