@@ -98,7 +98,7 @@
             - "http://docs.projectatomic.io/container-best-practices/#"
             - "_clear_packaging_caches_and_temporary_package_downloads"
         # Alpine (apk)
-        ## rm -rf /var/cache/apk/*
+        ## apk add NEEDS rm -rf /var/cache/apk/*
         #
         # Language Packaging cleanup rules
         #
@@ -187,6 +187,7 @@
       # tar archive (tar/gz/tgz/xz/bzip)
     #CMD:
     #  # recommend array instead of shell form
+    #  # Only 1
     COPY:
       paramSyntaxRegex: /.+/
       rules: []

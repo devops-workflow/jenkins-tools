@@ -11,7 +11,7 @@
 echo "Creating docker build arguments..."
 
 ### Find Dockerfile
-dockerDirs="infrastructure/docker docker . docker/production"
+dockerDirs="infrastructure/docker docker ."
 if [ -n "${dockerfilePath}" ]; then
   # Support passing in Dockerfile path by env variable
   dockerFile=${dockerfilePath}
