@@ -48,9 +48,6 @@
         #  reference_url:
         #    - "https://docs.docker.com/reference/builder/"
         #    - "#from"
-    MAINTAINER:
-      paramSyntaxRegex: /.+/
-      rules: []
     RUN:
       paramSyntaxRegex: /.+/
       rules:
@@ -185,27 +182,43 @@
       paramSyntaxRegex: /^~?([\w-.~:/?#\[\]\\\/*@!$&'()*+,;=.{}"]+[\s]*)+$/
       # TODO: recommend COPY instead if not URL (http/https) or
       # tar archive (tar/gz/tgz/xz/bzip)
-    #CMD:
-    #  # recommend array instead of shell form
-    #  # Only 1
+    CMD:
+      # recommend array instead of shell form
+      # Only 1
+      paramSyntaxRegex: /.+/
+      rules: []
     COPY:
       paramSyntaxRegex: /.+/
       rules: []
     ENTRYPOINT:
       paramSyntaxRegex: /.+/
       rules: []
-    VOLUME:
+    HEALTHCHECK:
+      # HEALTHCHECK [options] CMD <command>
+      # HEALTHCHECK NONE
+      paramSyntaxRegex: /.+/
+      rules: []
+    MAINTAINER:
+      paramSyntaxRegex: /.+/
+      rules: []
+    ONBUILD:
+      paramSyntaxRegex: /.+/
+      rules: []
+    SHELL:
+      # SHELL ["<executable>", "<parameters>"]
       paramSyntaxRegex: /.+/
       rules: []
     USER:
       paramSyntaxRegex: /^[a-z0-9_][a-z0-9_]{0,40}$/
       rules: []
+    VOLUME:
+      paramSyntaxRegex: /.+/
+      rules: []
     WORKDIR:
       paramSyntaxRegex: /^~?[\w\d-\/.{}$\/:]+[\s]*$/
       rules: []
-    ONBUILD:
-      paramSyntaxRegex: /.+/
-      rules: []
+    # Other commands:
+    #   STOPSIGNAL number or name
   required_instructions:
     -
       instruction: "MAINTAINER"
