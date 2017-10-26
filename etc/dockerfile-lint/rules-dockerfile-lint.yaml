@@ -195,7 +195,13 @@
       rules: []
     HEALTHCHECK:
       # HEALTHCHECK [options] CMD <command>
+      #   command can be shell command or exec array
       # HEALTHCHECK NONE
+      # Options:
+      #   --interval=DURATION (default: 30s)
+      #   --timeout=DURATION (default: 30s)
+      #   --start-period=DURATION (default: 0s)
+      #   --retries=N (default: 3)
       paramSyntaxRegex: /.+/
       rules: []
     MAINTAINER:
