@@ -52,7 +52,7 @@ esac
 # Get settings and creds from KMS
 #. kms_pull_and_export.sh ${KMS_S3_BUCKET} ${NAMESPACES}
 export TF_IN_AUTOMATION=true
-set -x
+set +x
 terraform --version
 cd ${WORKSPACE}/infrastructure/${tfDir}
 echo "Setting up terraform ..."
@@ -61,6 +61,6 @@ echo "Setting up terraform ..."
 # or terraform-init-s3-service.sh $org $env $service
 terraform get ${get_update}
 echo "Running terraform ${tfCmd}..."
-terraform ${tfCmd} -input=false
+terraform ${tfCmd} -input=false -no-color
 
 #tfVarFile=infrastructure/${tfDir}/${env}.vars -P tfAction=${tfCmd} -P tfConfS3KmsKey=${kmsKey} terraform
