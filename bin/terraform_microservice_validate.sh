@@ -33,10 +33,10 @@ fi
 dir="."
 tfDir="terraform"
 
-terraform --version
+#terraform --version
 cd ${WORKSPACE}/${dir}/infrastructure/${tfDir}
 echo "Setting up terraform ..."
-terraform init -input=false
+#terraform init -input=false
 # or terraform-init-s3-service.sh $org $env $service
 terraform get
 echo "Validate..."
