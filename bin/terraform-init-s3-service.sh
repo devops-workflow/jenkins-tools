@@ -22,6 +22,7 @@ org=$1
 envDeploy=$2
 service=$3
 
+cd infrastructure/terraform
 
 # TODO: if kms_key_id exists then encrypt is true
 terraform --version

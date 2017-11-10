@@ -56,7 +56,7 @@ set -x
 terraform --version
 cd ${WORKSPACE}/infrastructure/${tfDir}
 echo "Setting up terraform ..."
-terraform init -input=false ${init_upgrade}
+#terraform init -input=false ${init_upgrade}
 # or ./deploy.sh
 # or terraform-init-s3-service.sh $org $env $service
 terraform get ${get_update}
