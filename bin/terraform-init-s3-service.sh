@@ -19,8 +19,11 @@ if [ "$#" -eq 4 -a "$4" = "upgrade" ]; then
 fi
 
 org=$1
+org="${org,,}"
 envDeploy=$2
+envDeploy="${envDeploy,,}"
 service=$3
+service="${service,,}"
 
 cd infrastructure/terraform
 
