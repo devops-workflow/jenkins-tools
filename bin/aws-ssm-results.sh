@@ -10,6 +10,10 @@ while [ "${status}" = "Pending" -o "${status}" = "InProgress" -o "${status}" = "
   ssmResult=$(aws ssm list-commands --command-id ${ssmId})
   status=$(echo "${ssmResult}" | jq .Command.Status)
 done
+if [ "${status}" = "null" ]; then
+  echo "DEBUG: status null"
+  echo "${ssmResult}" | jq .
+fi
 case status in
   Canceled)
     echo "ERROR: SSM Aborted"
