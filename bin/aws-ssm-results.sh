@@ -8,7 +8,7 @@ ssmId=$1
 status='Pending'
 while [ "${status}" = "Pending" -o "${status}" = "InProgress" -o "${status}" = "Delayed" ]; do
   ssmResult=$(aws ssm list-commands --command-id ${ssmId})
-  status=$(echo "${ssmResult}" | jq .Commands.Status)
+  status=$(echo "${ssmResult}" | jq .Commands[].Status)
 done
 if [ "${status}" = "null" ]; then
   echo "DEBUG: status null"
