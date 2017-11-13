@@ -9,7 +9,7 @@ status='Pending'
 while [ "${status}" = "Pending" -o "${status}" = "InProgress" -o "${status}" = "Delayed" ]; do
   ssmResult=$(aws ssm list-commands --command-id ${ssmId})
   status=$(echo "${ssmResult}" | jq -r .Commands[].Status)
-  echo "Status: '${status}'"
+  echo "DEBUG: Status in loop: '${status}'"
 done
 if [ "${status}" = "null" ]; then
   echo "DEBUG: status null"
