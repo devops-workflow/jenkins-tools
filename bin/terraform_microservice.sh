@@ -61,6 +61,6 @@ echo "Setting up terraform ..."
 # or terraform-init-s3-service.sh $org $env $service
 terraform get ${get_update}
 echo "Running terraform ${tfCmd}..."
-terraform ${tfCmd} -input=false -no-color
+terraform ${tfCmd} -input=false -no-color ${opts}
 
 #tfVarFile=infrastructure/${tfDir}/${env}.vars -P tfAction=${tfCmd} -P tfConfS3KmsKey=${kmsKey} terraform
