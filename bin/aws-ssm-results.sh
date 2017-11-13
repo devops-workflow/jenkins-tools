@@ -14,7 +14,7 @@ if [ "${status}" = "null" ]; then
   echo "DEBUG: status null"
   echo "${ssmResult}" | jq .
 fi
-case status in
+case ${status} in
   Canceled)
     echo "ERROR: SSM Aborted"
     ;;
