@@ -14,7 +14,7 @@ containsElement () {
 }
 #nonNamespaced=(QA Staging Prod)
 if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 <plan|apply> <deploy env>"
+  echo "Usage: $0 <plan|apply|destroy> <deploy env>"
   #echo "Usage: $0 <plan|apply> <deploy env> <KMS Key>"
   exit 1
 fi
@@ -29,6 +29,10 @@ case ${tfCmd} in
     opts="tfplan"
     init_upgrade="-upgrade"
     # upgrade updates modules, plugins (providers),
+    get_update=""
+    ;;
+  destroy)
+    opts="-force"
     get_update=""
     ;;
   plan)
