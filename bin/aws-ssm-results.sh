@@ -31,7 +31,7 @@ case ${status} in
     echo "ERROR: SSM Failed"
     # TODO: output more details
     echo "DEBUG: list-commands..."
-    echo "${ssmResult}" | jq -r
+    echo "${ssmResult}" | jq -r .
     echo "DEBUG: list-command-invocations..."
     aws ssm list-command-invocations --command-id ${ssmId} --details
     ;;
