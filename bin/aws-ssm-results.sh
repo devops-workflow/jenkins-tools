@@ -9,6 +9,7 @@
 ssmId=$1
 status='Pending'
 while [ "${status}" = "Pending" -o "${status}" = "InProgress" -o "${status}" = "Delayed" ]; do
+  sleep 1
   ssmResult=$(aws ssm list-commands --command-id ${ssmId})
   status=$(echo "${ssmResult}" | jq -r .Commands[].Status | sort -u)
   echo "DEBUG: Status in loop: '${status}'"
@@ -28,6 +29,7 @@ case ${status} in
     ;;
   Failed|Undeliverable|Terminated)
     echo "ERROR: SSM Failed"
+    # TODO: output more details
     ;;
   *)
     echo "SSM completed with status: ${status}"
