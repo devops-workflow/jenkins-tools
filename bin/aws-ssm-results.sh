@@ -30,6 +30,10 @@ case ${status} in
   Failed|Undeliverable|Terminated)
     echo "ERROR: SSM Failed"
     # TODO: output more details
+    echo "DEBUG: list-commands..."
+    echo "${ssmResult}" | jq -r
+    echo "DEBUG: list-command-invocations..."
+    aws ssm list-command-invocations --command-id ${ssmId} --details
     ;;
   *)
     echo "SSM completed with status: ${status}"
