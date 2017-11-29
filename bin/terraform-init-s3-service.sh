@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# Setup terraform remote backend using AWS S3 and DynamoDB
+#
 # TODO: need routines to create (setup in terraform):
 #   s3 bucket
 #   dynamodb table w/ primary key: LockID
@@ -7,6 +9,7 @@
 # TODO: verify AWS access
 #
 
+#TODO: make arg
 aws_region='us-west-2'
 
 if [ "$#" -lt 3 ]; then
@@ -27,7 +30,6 @@ service="${service,,}"
 
 cd infrastructure/terraform
 
-# TODO: if kms_key_id exists then encrypt is true
 terraform --version
 terraform init \
   -input=false ${upgrade} \
@@ -35,7 +37,7 @@ terraform init \
   -backend-config "key=services/${service}.tfstate" \
   -backend-config "dynamodb_table=tf-state-lock" \
   -backend-config "region=${aws_region}"
-  # encrypt=true
-  
+  #-backend-config "encrypt=true"
+
   # kms_key_id=${kms_key_id}
   # profile=${aws_profile}

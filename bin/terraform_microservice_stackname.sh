@@ -7,7 +7,7 @@
 dirTerraform="infrastructure/terraform"
 
 pushd ${dirTerraform}
-files=$(ls -1 *.tf | grep -v terraform)
+files=$(ls -1 *.tf | grep -vE (provider|terraform|variables).tf)
 if [ $(echo "$files" | wc -l) -eq 1 ]; then
   microservice_stack="${files%%.tf}"
 else
