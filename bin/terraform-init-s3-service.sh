@@ -32,7 +32,7 @@ cd infrastructure/terraform
 tf_bucket="bucket=${org}-${envDeploy}-tf"
 tf_key="key=services/${service}.tfstate"
 tf_table="dynamodb_table=tf-state-lock"
-tf_region"region=${aws_region}"
+tf_region="region=${aws_region}"
 
 echo -e "Terraform backend:\n\t${tf_bucket}\n\t${tf_key}\n\t${tf_table}\n\t${tf_region}"
 terraform --version
