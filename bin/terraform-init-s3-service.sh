@@ -29,15 +29,20 @@ service=$3
 service="${service,,}"
 
 cd infrastructure/terraform
+tf_bucket="bucket=${org}-${envDeploy}-tf"
+tf_key="key=services/${service}.tfstate"
+tf_table="dynamodb_table=tf-state-lock"
+tf_region"region=${aws_region}"
 
+echo -e "Terraform backend:\n\t${tf_bucket}\n\t${tf_key}\n\t${tf_table}\n\t${tf_region}"
 terraform --version
 terraform init \
   -input=false ${upgrade} \
-  -backend-config "bucket=${org}-${envDeploy}-tf" \
-  -backend-config "key=services/${service}.tfstate" \
-  -backend-config "dynamodb_table=tf-state-lock" \
-  -backend-config "region=${aws_region}" \
-  -backend-config "encrypt=true"
+  -backend-config "${tf_bucket}" \
+  -backend-config "${tf_key}" \
+  -backend-config "${tf_table}" \
+  -backend-config "${tf_region}"
+  #-backend-config "encrypt=true"
 
   # kms_key_id=${kms_key_id}
   # profile=${aws_profile}
