@@ -6,6 +6,11 @@ cmdTags=$(cat ${tmpdir}/dockerBuildArgsTags)
 #cmdArgs=$(cat ${tmpdir}/dockerBuildArgs)
 dockerDir=$(cat ${tmpdir}/dockerDir)
 
+### Run prebuild prebuild script
+if [ -x ${dockerDir}/prebuild.sh ]; then
+  echo "Running docker prebuild script ..."
+  ${dockerDir}/prebuild.sh
+fi
 ### Build: docker image
 echo "Build CMD: docker build ${cmdTags} ${cmdArgs} -f ${dockerDir}/Dockerfile ."
 docker build ${cmdTags} ${cmdArgs} -f ${dockerDir}/Dockerfile .

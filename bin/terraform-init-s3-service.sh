@@ -36,8 +36,8 @@ terraform init \
   -backend-config "bucket=${org}-${envDeploy}-tf" \
   -backend-config "key=services/${service}.tfstate" \
   -backend-config "dynamodb_table=tf-state-lock" \
-  -backend-config "region=${aws_region}"
-  #-backend-config "encrypt=true"
+  -backend-config "region=${aws_region}" \
+  -backend-config "encrypt=true"
 
   # kms_key_id=${kms_key_id}
   # profile=${aws_profile}
