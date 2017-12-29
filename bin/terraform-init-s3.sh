@@ -17,7 +17,7 @@ if [ "$#" -lt 3 ]; then
   exit 1
 fi
 # Could check last arg instead
-if [ ("$#" -eq 4 -a "$4" = "upgrade") -o  ("$#" -eq 5 -a "$5" = "upgrade") ]; then
+if [ \( "$#" -eq 4 -a "$4" = "upgrade" \) -o  \( "$#" -eq 5 -a "$5" = "upgrade" \) ]; then
   upgrade="-upgrade"
 fi
 if [ "$#" -gt 3 -a "$4" != "upgrade" ]; then
