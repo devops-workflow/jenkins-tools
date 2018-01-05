@@ -21,7 +21,7 @@ curl https://circleci.com/api/v1.1/project/github/${github_org}/${github_repo}/$
 ### Clean ?circle-token= off filename ends
 # TODO: change path to /bin/bash after testing on Mac
 cat <<"RENAME" >${script}
-#!/usr/local/bin/bash
+#!/bin/bash
 file_old=$1
 file_new="${file_old%%\?*}"
 echo "CMD: mv ${file_old} ${file_new}"
