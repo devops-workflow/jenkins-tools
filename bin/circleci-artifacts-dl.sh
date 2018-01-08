@@ -1,7 +1,12 @@
 #!/bin/bash
-
+#
+# Download build artifacts from CircleCI for builds from github repos
+#
+# CircleCI access API token (CIRCLE_API_TOKEN) must be set before running script
+#
 github_org=$1
 github_repo=$2
+# Build number that has the artifacts
 build_num=$3
 if [ -z "${CIRCLE_API_TOKEN}" ]; then
   echo "CIRCLE_API_TOKEN not set"
@@ -9,6 +14,7 @@ if [ -z "${CIRCLE_API_TOKEN}" ]; then
 fi
 circle_token="?circle-token=${CIRCLE_API_TOKEN}"
 
+# Directory to put artifacts in
 dir='reports'
 file_urls='artifacts.txt'
 script='renamer.sh'
