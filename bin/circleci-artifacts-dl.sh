@@ -30,9 +30,10 @@ cat <<"RENAME" >${script}
 #!/bin/bash
 file_old=$1
 file_new="${file_old%%\?*}"
-echo "CMD: mv ${file_old} ${file_new}"
+#echo "CMD: mv ${file_old} ${file_new}"
 mv ${file_old} ${file_new}
 RENAME
 chmod +x ${script}
-find ${dir} -name '*\?circle-token=*' -print0 | xargs -0tn1 ./${script}
+# -t for debug output
+find ${dir} -name '*\?circle-token=*' -print0 | xargs -0n1 ./${script}
 rm -f ${script} ${file_urls}
