@@ -23,7 +23,7 @@ curl https://circleci.com/api/v1.1/project/github/${github_org}/${github_repo}/$
 ### Filter artifact URLs
 
 ### Download artifacts
-<${file_urls} xargs -P4 -I % wget -xnH -P ${dir} --cut-dirs=1 %${circle_token}
+<${file_urls} xargs -P4 -I % wget -nv -xnH -P ${dir} --cut-dirs=1 %${circle_token}
 ### Clean ?circle-token= off filename ends
 # TODO: change path to /bin/bash after testing on Mac
 cat <<"RENAME" >${script}
