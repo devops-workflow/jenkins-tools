@@ -6,8 +6,8 @@
 #
 github_org=$1
 github_repo=$2
-# Build number that has the artifacts
-build_num=$3
+# Build numbers that have the artifacts
+build_nums=$3
 if [ -z "${CIRCLE_API_TOKEN}" ]; then
   echo "CIRCLE_API_TOKEN not set"
   exit 1
@@ -18,12 +18,23 @@ circle_token="?circle-token=${CIRCLE_API_TOKEN}"
 dir='reports'
 file_urls='artifacts.txt'
 script='renamer.sh'
+
 ### Get artifact URLs
-curl https://circleci.com/api/v1.1/project/github/${github_org}/${github_repo}/${build_num}/artifacts${circle_token} | grep -o 'https://[^"]*' > ${file_urls}
+oldIFS=$IFS
+IFS=','
+for build in ${build_nums}; do
+  file_urls="artifacts-${build}.txt"
+  curl https://circleci.com/api/v1.1/project/github/${github_org}/${github_repo}/${build}/artifacts${circle_token} | grep -o 'https://[^"]*' > ${file_urls}
+done
+IFS=$oldIFS
+
 ### Filter artifact URLs
 
 ### Download artifacts
-<${file_urls} xargs -P4 -I % wget -nv -xnH -P ${dir} --cut-dirs=1 %${circle_token}
+for url_file in $(ls -1 artifacts-*.txt ); do
+  <${url_file} xargs -P4 -I % wget -nv -xnH -P ${dir} --cut-dirs=1 %${circle_token}
+done
+
 ### Clean ?circle-token= off filename ends
 # TODO: change path to /bin/bash after testing on Mac
 cat <<"RENAME" >${script}
@@ -36,4 +47,4 @@ RENAME
 chmod +x ${script}
 # -t for debug output
 find ${dir} -name '*\?circle-token=*' -print0 | xargs -0n1 ./${script}
-rm -f ${script} ${file_urls}
+#rm -f ${script} artifacts-*.txt
