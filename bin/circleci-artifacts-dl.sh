@@ -16,7 +16,7 @@ circle_token="?circle-token=${CIRCLE_API_TOKEN}"
 
 # Directory to put artifacts in
 dir='reports'
-file_urls='artifacts.txt'
+#file_urls='artifacts.txt'
 script='renamer.sh'
 
 ### Get artifact URLs
@@ -29,14 +29,16 @@ done
 IFS=$oldIFS
 
 ### Filter artifact URLs
+# TODO: filter to dl only files under ${dir}
 
 ### Download artifacts
-for url_file in $(ls -1 artifacts-*.txt ); do
-  <${url_file} xargs -P4 -I % wget -nv -xnH -P ${dir} --cut-dirs=1 %${circle_token}
+for build in ${build_nums}; do
+  url_file="artifacts-${build}.txt"
+  # <${url_file} xargs -P4 -I % wget -nv -xnH -P ${dir} --cut-dirs=1 %${circle_token}
+  <${url_file} xargs -P4 -I % wget -nv -xnH --cut-dirs=1 %${circle_token}
 done
 
 ### Clean ?circle-token= off filename ends
-# TODO: change path to /bin/bash after testing on Mac
 cat <<"RENAME" >${script}
 #!/bin/bash
 file_old=$1
@@ -47,4 +49,6 @@ RENAME
 chmod +x ${script}
 # -t for debug output
 find ${dir} -name '*\?circle-token=*' -print0 | xargs -0n1 ./${script}
-#rm -f ${script} artifacts-*.txt
+
+### Cleanup files
+rm -f ${script} artifacts-*.txt
