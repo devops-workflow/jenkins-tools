@@ -14,29 +14,27 @@ if [ -z "${CIRCLE_API_TOKEN}" ]; then
 fi
 circle_token="?circle-token=${CIRCLE_API_TOKEN}"
 
-# Directory to put artifacts in
+# Directory tat artifacts are in and will be copied
 dir='reports'
-#file_urls='artifacts.txt'
 script='renamer.sh'
 
-### Get artifact URLs
+### Get artifact URLs and download
 oldIFS=$IFS
 IFS=','
 for build in ${build_nums}; do
   file_urls="artifacts-${build}.txt"
+  # Get artifact URLs
   curl https://circleci.com/api/v1.1/project/github/${github_org}/${github_repo}/${build}/artifacts${circle_token} | grep -o 'https://[^"]*' > ${file_urls}
+  # Filter artifact URLs
+  # TODO: filter to dl only files under ${dir}
+  #
+  # Download artifacts
+  # <${file_urls} xargs -P4 -I % wget -nv -xnH -P ${dir} --cut-dirs=1 %${circle_token}
+  IFS=$oldIFS
+  <${file_urls} xargs -P4 -I % wget -nv -xnH --cut-dirs=1 %${circle_token}
+  IFS=','
 done
 IFS=$oldIFS
-
-### Filter artifact URLs
-# TODO: filter to dl only files under ${dir}
-
-### Download artifacts
-for build in ${build_nums}; do
-  url_file="artifacts-${build}.txt"
-  # <${url_file} xargs -P4 -I % wget -nv -xnH -P ${dir} --cut-dirs=1 %${circle_token}
-  <${url_file} xargs -P4 -I % wget -nv -xnH --cut-dirs=1 %${circle_token}
-done
 
 ### Clean ?circle-token= off filename ends
 cat <<"RENAME" >${script}
