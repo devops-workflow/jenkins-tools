@@ -25,7 +25,7 @@ else
 fi
 if [ -z "${dockerFile}" ]; then
   echo "ERROR: Dockerfile NOT found"
-  #exit 1
+  exit 1
 else
   echo "Dockerfile: ${dockerFile}"
 fi
