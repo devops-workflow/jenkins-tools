@@ -8,7 +8,7 @@ dirTerraform="infrastructure/terraform"
 
 if [ -d "${dirTerraform}" ]; then
   pushd ${dirTerraform}
-  files=$(ls -1 *.tf | grep -vE '(provider|terraform|variables).tf' )
+  files=$(ls -1 *.tf | grep -vE '(outputs|provider|terraform|variables).tf' )
   if [ $(echo "$files" | wc -l) -eq 1 ]; then
     microservice_stack="${files%%.tf}"
   else
