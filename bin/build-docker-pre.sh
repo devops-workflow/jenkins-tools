@@ -110,6 +110,7 @@ grep '^# METADATA Section' ${dockerFile}
 if [ $? -ne 0 ]; then
   echo "Adding LABEL definitions to Dockerfile"
   cat <<LABELS >>${dockerFile}
+
 # METADATA Section
 ###
 ### Setup both static and dynamic build time metadata
@@ -126,6 +127,7 @@ ARG BUILD_DATE=2000-01-01
 ARG BUILD_NUMBER=1
 ARG BUILD_TAG=dev
 ARG BUILD_URL=dev
+ARG GIT_BRANCH=dev
 ARG GIT_COMMIT=dev
 ARG GIT_URL=dev
 ARG JOB_NAME=dev
@@ -136,6 +138,7 @@ LABEL org.label-schema.build-date="\${BUILD_DATE}" \
  org.label-schema.description="${gitRepo}" \
  org.label-schema.vendor="Wiser Solutions" \
  org.label-schema.version="\${VERSION}" \
+ org.label-schema.vcs-branch="\${GIT_BRANCH}" \
  org.label-schema.vcs-ref="\${GIT_COMMIT}" \
  org.label-schema.vcs-url="\${GIT_URL}" \
  org.label-schema.schema-version="1.0" \
@@ -151,6 +154,15 @@ cmdArgs=''
 for A in $(grep ^ARG ${dockerFile} | cut -d\  -f2 | cut -d= -f1); do
   cmdArgs="${cmdArgs} --build-arg ${A}=${!A}"
 done
+if [ -n "${ARTIFACTORY_URL}" ]; then
+  cmdArgs="${cmdArgs} --build-arg ARTIFACTORY_URL=${ARTIFACTORY_URL}"
+fi
+if [ -n "${ARTIFACTORY_USER}" ]; then
+  cmdArgs="${cmdArgs} --build-arg ARTIFACTORY_USER=${ARTIFACTORY_USER}"
+fi
+if [ -n "${ARTIFACTORY_PASSWORD}" ]; then
+  cmdArgs="${cmdArgs} --build-arg ARTIFACTORY_PASSWORD=${ARTIFACTORY_PASSWORD}"
+fi
 echo "DEBUG: Args=${cmdArgs}"
 echo "${cmdArgs}" > ${dockerBuildArgs}
 echo "${cmdArgs}" > ${dockerBuildArgsVars}
