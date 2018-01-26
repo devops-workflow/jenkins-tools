@@ -151,18 +151,10 @@ fi
 
 ### Build command line for ARG variable assignments
 cmdArgs=''
-for A in $(grep ^ARG ${dockerFile} | cut -d\  -f2 | cut -d= -f1); do
+# Could have duplicates in dockerfile. Unique only
+for A in $(grep ^ARG ${dockerFile} | cut -d\  -f2 | cut -d= -f1 | sort -u); do
   cmdArgs="${cmdArgs} --build-arg ${A}=${!A}"
 done
-if [ -n "${ARTIFACTORY_URL}" ]; then
-  cmdArgs="${cmdArgs} --build-arg ARTIFACTORY_URL=${ARTIFACTORY_URL}"
-fi
-if [ -n "${ARTIFACTORY_USER}" ]; then
-  cmdArgs="${cmdArgs} --build-arg ARTIFACTORY_USER=${ARTIFACTORY_USER}"
-fi
-if [ -n "${ARTIFACTORY_PASSWORD}" ]; then
-  cmdArgs="${cmdArgs} --build-arg ARTIFACTORY_PASSWORD=${ARTIFACTORY_PASSWORD}"
-fi
 echo "DEBUG: Args=${cmdArgs}"
 echo "${cmdArgs}" > ${dockerBuildArgs}
 echo "${cmdArgs}" > ${dockerBuildArgsVars}
