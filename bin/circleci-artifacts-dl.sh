@@ -24,9 +24,11 @@ IFS=','
 for build in ${build_nums}; do
   file_urls="artifacts-${build}.txt"
   # Get artifact URLs
-  curl https://circleci.com/api/v1.1/project/github/${github_org}/${github_repo}/${build}/artifacts${circle_token} | grep -o 'https://[^"]*' > ${file_urls}
+  curl https://circleci.com/api/v1.1/project/github/${github_org}/${github_repo}/${build}/artifacts${circle_token} \
+    | grep -o 'https://[^"]*' > ${file_urls}
   # Filter artifact URLs
   # TODO: filter to dl only files under ${dir}
+  # grep -E "/[0-9]+/${dir}/"
   #
   # Download artifacts
   # <${file_urls} xargs -P4 -I % wget -nv -xnH -P ${dir} --cut-dirs=1 %${circle_token}
