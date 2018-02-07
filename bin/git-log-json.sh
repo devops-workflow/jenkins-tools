@@ -11,7 +11,7 @@
 
 commit_count=$1
 
-git log -n ${commit_count} --pretty=format:'{%n  "commit": "%H",%n  "abbreviated_commit": "%h",%n  "refs": "%D",%n  "author": "%aN",%n  "date": "%aD",%n  "subject": "%s",%n  "body": "%b"%n},' \
+git log -n ${commit_count} --pretty=format:'{%n  "commit": "%H",%n  "abbreviated_commit": "%h",%n  "refs": "%D",%n  "author": "%aN",%n  "date": "%aD",%n  "subject": "%s",%n  "body": "%b"%n},' | \
 perl -pe 'BEGIN{print "["}; END{print "]\n"}' | \
 perl -pe 's/},]/}]/'
 
