@@ -2,6 +2,9 @@
 #
 # Setup terraform remote backend using AWS S3 and DynamoDB
 #
+# Environment Variables:
+#   TERRAFORM_CMD   Set the command used to run terraform
+
 # TODO: need routines to create (setup in terraform):
 #   s3 bucket
 #   dynamodb table w/ primary key: LockID
@@ -25,6 +28,11 @@ if [ "$#" -gt 3 -a "$4" != "upgrade" ]; then
 else
   s3_path="services"
 fi
+if [ -n  "${TERRAFORM_CMD}" ]; then
+  tf_cmd="${TERRAFORM_CMD}"
+else
+  tf_cmd="terraform"
+fi
 org=$1
 org="${org,,}"
 envDeploy=$2
@@ -39,8 +47,9 @@ tf_table="dynamodb_table=tf-state-lock"
 tf_region="region=${aws_region}"
 
 echo -e "Terraform backend:\n\t${tf_bucket}\n\t${tf_key}\n\t${tf_table}\n\t${tf_region}"
-terraform --version
-terraform init \
+echo "Using terraform: ${tf_cmd}"
+${tf_cmd} --version
+${tf_cmd} init \
   -input=false ${upgrade} \
   -backend-config "${tf_bucket}" \
   -backend-config "${tf_key}" \

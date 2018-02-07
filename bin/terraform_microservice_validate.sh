@@ -2,7 +2,8 @@
 #
 # Terraform validate for Microservices
 #
-# Environment variables used:
+# Environment Variables:
+#   TERRAFORM_CMD   Set the command used to run terraform
 #   WORKSPACE
 # Arguments:
 #
@@ -32,12 +33,17 @@ fi
 
 dir="."
 tfDir="terraform"
+if [ -n  "${TERRAFORM_CMD}" ]; then
+  tf_cmd="${TERRAFORM_CMD}"
+else
+  tf_cmd="terraform"
+fi
 
 #terraform --version
 cd ${WORKSPACE}/${dir}/infrastructure/${tfDir}
 echo "Setting up terraform ..."
 #terraform init -input=false
 # or terraform-init-s3-service.sh $org $env $service
-terraform get
+${tf_cmd} get
 echo "Validate..."
-terraform validate
+${tf_cmd} validate

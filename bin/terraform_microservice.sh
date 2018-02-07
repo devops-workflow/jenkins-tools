@@ -2,8 +2,10 @@
 #
 # Terraform plan/apply for Microservices
 #
-# Environment variables used:
-#   KMS_S3_BUCKET NAMESPACES
+# Environment Variables:
+#   TERRAFORM_CMD   Set the command used to run terraform
+#   KMS_S3_BUCKET
+#   NAMESPACES
 # Arguments:
 #   tfCmd, env, kmsKey
 
@@ -17,6 +19,11 @@ if [ "$#" -ne 2 ]; then
   echo "Usage: $0 <plan|apply|destroy> <deploy env>"
   #echo "Usage: $0 <plan|apply> <deploy env> <KMS Key>"
   exit 1
+fi
+if [ -n  "${TERRAFORM_CMD}" ]; then
+  tf_cmd="${TERRAFORM_CMD}"
+else
+  tf_cmd="terraform"
 fi
 tfCmd=$1
 envDeploy=$2
@@ -57,14 +64,14 @@ esac
 #. kms_pull_and_export.sh ${KMS_S3_BUCKET} ${NAMESPACES}
 export TF_IN_AUTOMATION=true
 set +x
-terraform --version
+${tf_cmd} --version
 cd ${WORKSPACE}/infrastructure/${tfDir}
 echo "Setting up terraform ..."
 #terraform init -input=false ${init_upgrade}
 # or ./deploy.sh
 # or terraform-init-s3-service.sh $org $env $service
-terraform get ${get_update}
+${tf_cmd} get ${get_update}
 echo "Running terraform ${tfCmd}..."
-terraform ${tfCmd} -input=false -no-color ${opts}
+${tf_cmd} ${tfCmd} -input=false -no-color ${opts}
 
 #tfVarFile=infrastructure/${tfDir}/${env}.vars -P tfAction=${tfCmd} -P tfConfS3KmsKey=${kmsKey} terraform
