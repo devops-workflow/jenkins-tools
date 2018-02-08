@@ -27,9 +27,10 @@ if [ -n "${namespace}" ]; then
 else
   repository="${gitOrg}/${gitRepo}"
 fi
+repository="${repository,,}"
 
 VERSION=$(cat ${versionFile})
-dockerImage="${repository,,}:${VERSION}"
+dockerImage="${repository}:${VERSION}"
 dockerImageID=$(docker images --format '{{.ID}}' ${dockerImage})
 echo "${dockerImageID}" > ${tmpdir}/dockerImageID
 
