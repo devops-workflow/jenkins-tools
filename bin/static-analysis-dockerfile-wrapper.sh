@@ -11,7 +11,7 @@
 #  lynis
 #  validate-dockerfile
 #  whale-linter
-
+DEBUG=1
 printf "=%.s" {1..30}
 echo -e "\nStarting Dockerfile testing..."
 printf "=%.s" {1..30}
@@ -27,7 +27,12 @@ if [ -n "${dockerfilePath}" ]; then
 else
   dockerFile=${dockerDir}/Dockerfile
 fi
-
+if ( ${DEBUG} -eq 1 ); then
+  echo -e "\tdockerfilePath = ${dockerfilePath}"
+  echo -e "\tdockerFile = ${dockerFile}"
+fi
+export dockerFile
+export dockerfilePath
 mkdir -p ${tmpdir}
 mkdir -p ${reportsDir}
 
