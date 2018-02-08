@@ -27,7 +27,7 @@ if [ -n "${dockerfilePath}" ]; then
 else
   dockerFile=${dockerDir}/Dockerfile
 fi
-if ( ${DEBUG} -eq 1 ); then
+if [ ${DEBUG} -eq 1 ]; then
   echo -e "\tdockerfilePath = ${dockerfilePath}"
   echo -e "\tdockerFile = ${dockerFile}"
 fi
