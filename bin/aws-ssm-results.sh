@@ -37,5 +37,9 @@ case ${status} in
     ;;
   *)
     echo "SSM completed with status: ${status}"
+    echo "DEBUG: list-commands..."
+    echo "${ssmResult}" | jq .
+    echo "DEBUG: list-command-invocations..."
+    aws ssm list-command-invocations --command-id ${ssmId} --details
     ;;
 esac
