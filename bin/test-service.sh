@@ -15,13 +15,15 @@ repo=$(basename ${GIT_URL})
 service="${repo%%.*}"
 gitCommitMsg=$(git log -1 --pretty=%B)
 
-curl -fi --header "${header}" \
+curl -fiSs --header "${header}" \
 --data "{\"service\":\"${service}\", \"gitCommit\":\"${GIT_COMMIT}\", \"commitedBy\":\"${GIT_COMMITTER_NAME}\", \"commitMessage\":\"${gitCommitMsg}\", \"jenkinsBuildId\":\"${BUILD_ID}\", \"user\":\"jenkins\"}" \
 http://tas.test.wiser.com:3060/test_deployed_service
 result=$?
 if [ $result -ne 0 ]; then
   echo -e "\nERROR: curl command failed. Result: ${result}"
   exit ${result}
+else
+  echo -e "\n"
 fi
 
 #--data "{\"service\":\"${service}\", \"gitCommit\":\"${GIT_COMMIT}\", \"commitedBy\":\"${GIT_COMMITTER_NAME}\", \"commitMessage\":\"${gitCommitMsg}\", \"JenkinsBuildId\":\"${BUILD_ID}\", \"user\":\"jenkins\"}" \
