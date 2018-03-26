@@ -92,18 +92,18 @@ echo "Starting cleanup of old artifacts..."
 if [ -d ${imageDir} ]; then
  rm -rf ${imageDir}/*
 fi
-# Clean host of old images in Docker
-echo "Removing images for: ${imageName}..."
-for I in $(docker images --format "{{.ID}}" ${imageName} | sort -u); do
-  docker rmi -f $I
-done
-# TODO: Improve and remove all untagged images.
-# DANGEROUS: This will only work if ONLY 1 container job exists. Otherwise could be removing layers of other images.
-# Needed due to lack of disk space. But better cleanup is needed
-echo "Removing untagged images..."
-for I in $(docker images -a --format "{{.ID}} {{.Tag}}" | grep '<none>' | cut -d\  -f1 | sort -u); do
-  docker rmi -f $I
-done
+## Clean host of old images in Docker
+#echo "Removing images for: ${imageName}..."
+#for I in $(docker images --format "{{.ID}}" ${imageName} | sort -u); do
+#  docker rmi -f $I
+#done
+## TODO: Improve and remove all untagged images.
+## DANGEROUS: This will only work if ONLY 1 container job exists. Otherwise could be removing layers of other images.
+## Needed due to lack of disk space. But better cleanup is needed
+#echo "Removing untagged images..."
+#for I in $(docker images -a --format "{{.ID}} {{.Tag}}" | grep '<none>' | cut -d\  -f1 | sort -u); do
+#  docker rmi -f $I
+#done
 
 # if no labels in file, add them
 grep '^# METADATA Section' ${dockerFile}
