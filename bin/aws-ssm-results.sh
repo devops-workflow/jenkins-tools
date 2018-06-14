@@ -7,39 +7,40 @@
 # TODO: handle multiple results returned - Needs testing
 
 ssmId=$1
+service=$2
 status='Pending'
 while [ "${status}" = "Pending" -o "${status}" = "InProgress" -o "${status}" = "Delayed" ]; do
   sleep 1
   ssmResult=$(aws ssm list-commands --command-id ${ssmId})
   status=$(echo "${ssmResult}" | jq -r .Commands[].Status | sort -u)
-  echo "DEBUG: Status in loop: '${status}'"
+  echo "DEBUG: ${service}: Status in loop: '${status}'"
   statusTypes=$(echo "${status}" | wc -l)
   if [ $statusTypes -gt 1 ]; then
-    echo -e "\tDEBUG: resetting status. Had ${statusTypes} status types"
+    echo -e "\tDEBUG: ${service}: resetting status. Had ${statusTypes} status types"
     status='InProgress'
   fi
 done
 if [ "${status}" = "null" ]; then
-  echo "DEBUG: status null"
+  echo "DEBUG: ${service}: status null"
   echo "${ssmResult}" | jq .
 fi
 case ${status} in
   Canceled)
-    echo "ERROR: SSM Aborted"
+    echo "ERROR: ${service}: SSM Aborted"
     ;;
   Failed|Undeliverable|Terminated)
-    echo "ERROR: SSM Failed"
+    echo "ERROR: ${service}: SSM Failed"
     # TODO: output more details
-    echo "DEBUG: list-commands..."
+    echo "DEBUG: ${service}: list-commands..."
     echo "${ssmResult}" | jq -r .
-    echo "DEBUG: list-command-invocations..."
+    echo "DEBUG: ${service}: list-command-invocations..."
     aws ssm list-command-invocations --command-id ${ssmId} --details
     ;;
   *)
-    echo "SSM completed with status: ${status}"
-    echo "DEBUG: list-commands..."
+    echo "${service}: SSM completed with status: ${status}"
+    echo "DEBUG: ${service}: list-commands..."
     echo "${ssmResult}" | jq .
-    echo "DEBUG: list-command-invocations..."
+    echo "DEBUG: ${service}: list-command-invocations..."
     aws ssm list-command-invocations --command-id ${ssmId} --details
     ;;
 esac
