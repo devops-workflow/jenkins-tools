@@ -151,6 +151,10 @@ fi
 
 ### Build command line for ARG variable assignments
 cmdArgs=''
+if [ "${GIT_BRANCH}" == "detached" ]; then
+  GIT_BRANCH=$(git branch -r --contains ${GIT_COMMIT})
+  GIT_BRANCH="${GIT_BRANCH#"${GIT_BRANCH%%[![:space:]]*}"}"
+fi
 # Could have duplicates in dockerfile. Unique only
 for A in $(grep ^ARG ${dockerFile} | cut -d\  -f2 | cut -d= -f1 | sort -u); do
   cmdArgs="${cmdArgs} --build-arg ${A}=${!A}"
@@ -171,15 +175,20 @@ buildTags=''
 # Add standard build tags
 # remove latest if use plugin
 # docker tag
+# Only add latest for master branch
+if [ "${GIT_BRANCH}" == 'origin/master' ]; then
+  tag_latest="${imageName}:latest"
+  cmd_latest="-t ${tag_latest}"
+fi
 #tagList=
-buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:${TAG_DATE} ${imageName}:latest ${buildTags}"
+buildTags="${imageName}:${VERSION} ${imageName}:${BUILD_NUMBER} ${imageName}:${TAG_DATE} ${tag_latest} ${buildTags}"
 #buildTagsOnly="${VERSION} ${BUILD_NUMBER} ${TAG_DATE} ${buildTagsOnly}"
 #for T in ${buildTags}; do
 #  cmdTags="${cmdTags} -t ${T}"
 #done
 #docker build
 #buildTags=
-cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:${TAG_DATE} -t ${imageName}:latest ${cmdTags}"
+cmdTags="-t ${imageName}:${VERSION} -t ${imageName}:${BUILD_NUMBER} -t ${imageName}:${TAG_DATE} ${cmd_latest} ${cmdTags}"
 echo "DEBUG: list Tags=${buildTags}"
 echo "DEBUG: build command Tags=${cmdTags}"
 #echo "#${BUILD_NUMBER} ${buildTags}" > ${buildName}
