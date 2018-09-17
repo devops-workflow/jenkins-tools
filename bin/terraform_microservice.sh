@@ -15,8 +15,26 @@ containsElement () {
   return 1
 }
 #nonNamespaced=(QA Staging Prod)
-if [ "$#" -ne 2 ]; then
-  echo "Usage: $0 <plan|apply|destroy> <deploy env>"
+
+tfvarsFile () {
+  env=$1
+  if [ "$#" -eq 2 ]; then
+    file="${env}-$2.tfvars"
+  else
+    file="${env}.tfvars"
+  fi
+  if [ -f ${file} ]; then
+    echo "-var-file=${file}"
+  else
+    echo ""
+  fi
+  return
+}
+
+if [ "$#" -lt 2 -o "$#" -gt 3 ]; then
+  echo "Usage: $0 <plan|apply|destroy> <deploy env> [<modifier>]"
+#if [ "$#" -ne 2 ]; then
+#  echo "Usage: $0 <plan|apply|destroy> <deploy env>"
   #echo "Usage: $0 <plan|apply> <deploy env> <KMS Key>"
   exit 1
 fi
@@ -28,6 +46,9 @@ fi
 tfCmd=$1
 envDeploy=$2
 envDeploy="${envDeploy,,}"
+if [ "$#" -gt 2 ]; then
+  modifier=$3
+fi
 #kmsKey=$3
 #containsElement ${envApp} "${nonNamespaced[@]}"
 tfDir="terraform"
@@ -67,11 +88,12 @@ set +x
 ${tf_cmd} --version
 cd ${WORKSPACE}/infrastructure/${tfDir}
 echo "Setting up terraform ..."
+arg_var_file=$(tfvarsFile ${envDeploy} ${modifier})
 #terraform init -input=false ${init_upgrade}
 # or ./deploy.sh
 # or terraform-init-s3-service.sh $org $env $service
 ${tf_cmd} get ${get_update}
 echo "Running terraform ${tfCmd}..."
-${tf_cmd} ${tfCmd} -input=false -no-color ${opts}
+${tf_cmd} ${tfCmd} -input=false -no-color ${arg_var_file} ${opts}
 
 #tfVarFile=infrastructure/${tfDir}/${env}.vars -P tfAction=${tfCmd} -P tfConfS3KmsKey=${kmsKey} terraform
