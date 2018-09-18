@@ -152,8 +152,16 @@ fi
 ### Build command line for ARG variable assignments
 cmdArgs=''
 if [ "${GIT_BRANCH}" == "detached" ]; then
-  GIT_BRANCH=$(git branch -r --contains ${GIT_COMMIT})
-  GIT_BRANCH="${GIT_BRANCH#"${GIT_BRANCH%%[![:space:]]*}"}"
+  # Works but what if new branch after commit but before build?
+  #GIT_BRANCH=$(git for-each-ref --count=1 --sort=-committerdate refs/remotes/ --format='%(refname:short)' --contains $GIT_COMMMIT)
+  for branch in $(git branch -r --contains ${GIT_COMMIT}); do
+    if [ "${branch}" == 'origin/master' ]; then
+      GIT_BRANCH="${branch}"
+      break
+    fi
+  done
+  # Trim leading whitespace
+  #GIT_BRANCH="${GIT_BRANCH#"${GIT_BRANCH%%[![:space:]]*}"}"
 fi
 # Could have duplicates in dockerfile. Unique only
 for A in $(grep ^ARG ${dockerFile} | cut -d\  -f2 | cut -d= -f1 | sort -u); do
