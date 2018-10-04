@@ -58,15 +58,18 @@ case ${tfCmd} in
     init_upgrade="-upgrade"
     # upgrade updates modules, plugins (providers),
     get_update=""
+    arg_var_file=""
     ;;
   destroy)
     opts="-force"
     get_update=""
+    arg_var_file=$(tfvarsFile ${envDeploy} ${modifier})
     ;;
   plan)
     opts="-out=tfplan"
     init_upgrade="-upgrade"
     get_update="" # "-update"
+    arg_var_file=$(tfvarsFile ${envDeploy} ${modifier})
     ;;
   *)
     echo "ERROR: unknown command: ${tfCmd}"
@@ -88,7 +91,6 @@ set +x
 ${tf_cmd} --version
 cd ${WORKSPACE}/infrastructure/${tfDir}
 echo "Setting up terraform ..."
-arg_var_file=$(tfvarsFile ${envDeploy} ${modifier})
 #terraform init -input=false ${init_upgrade}
 # or ./deploy.sh
 # or terraform-init-s3-service.sh $org $env $service
