@@ -52,6 +52,7 @@ fi
 #kmsKey=$3
 #containsElement ${envApp} "${nonNamespaced[@]}"
 tfDir="terraform"
+cd ${WORKSPACE}/infrastructure/${tfDir}
 case ${tfCmd} in
   apply)
     opts="tfplan"
@@ -89,7 +90,6 @@ esac
 export TF_IN_AUTOMATION=true
 set +x
 ${tf_cmd} --version
-cd ${WORKSPACE}/infrastructure/${tfDir}
 echo "Setting up terraform ..."
 #terraform init -input=false ${init_upgrade}
 # or ./deploy.sh
